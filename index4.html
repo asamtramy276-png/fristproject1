@@ -1,0 +1,1429 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>نظام إدارة المدرسة المتكامل | نسخة معدلة</title>
+    <style>
+      :root {
+        --bg-main: #0f172a;
+        --bg-card: #1e293b;
+        --bg-sidebar: #0b1120;
+        --border-color: #334155;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --accent: #3b82f6;
+        --accent-hover: #2563eb;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-primary);
+        min-height: 100vh;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* ================= شاشة تسجيل الدخول ================= */
+      #authScreen {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .auth-box {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 430px;
+        padding: 28px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .auth-header h1 {
+        color: var(--accent);
+        font-size: 1.45rem;
+        margin-bottom: 6px;
+      }
+      .auth-header p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .auth-tabs {
+        display: flex;
+        background-color: var(--bg-main);
+        padding: 4px;
+        border-radius: 10px;
+        margin-bottom: 18px;
+      }
+
+      .auth-tabs button {
+        flex: 1;
+        padding: 9px;
+        border: none;
+        background: transparent;
+        color: var(--text-secondary);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .auth-tabs button.active {
+        background-color: var(--accent);
+        color: #fff;
+      }
+
+      .form-group {
+        margin-bottom: 14px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.88rem;
+        color: var(--text-secondary);
+      }
+
+      .demo-hint {
+        margin-top: 12px;
+        font-size: 0.82rem;
+        color: var(--text-secondary);
+        background: rgba(15, 23, 42, 0.6);
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px dashed var(--border-color);
+      }
+
+      .msg {
+        margin-top: 12px;
+        padding: 9px;
+        border-radius: 8px;
+        font-size: 0.88rem;
+        text-align: center;
+        display: none;
+      }
+      .msg.error {
+        display: block;
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--danger);
+      }
+      .msg.success {
+        display: block;
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success);
+      }
+
+      /* ================= هيكل السيستم بعد الدخول ================= */
+      #appScreen {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 265px;
+        background-color: var(--bg-sidebar);
+        border-left: 1px solid var(--border-color);
+        padding: 18px 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: fixed;
+        height: 100vh;
+        right: 0;
+        top: 0;
+        z-index: 100;
+      }
+
+      .brand {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--accent);
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: center;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .nav-links button {
+        width: 100%;
+        background: transparent;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 14px;
+        color: var(--text-secondary);
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.93rem;
+        font-weight: 500;
+        transition: 0.2s;
+        text-align: right;
+      }
+
+      .nav-links button:hover,
+      .nav-links button.active {
+        background-color: var(--accent);
+        color: #fff;
+      }
+
+      .sidebar-footer {
+        border-top: 1px solid var(--border-color);
+        padding-top: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .main-content {
+        margin-right: 265px;
+        flex: 1;
+        padding: 24px 28px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .user-chip {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.88rem;
+        color: var(--text-secondary);
+      }
+
+      .page-section {
+        display: none;
+        animation: fadeIn 0.22s ease;
+      }
+
+      .page-section.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+        gap: 18px;
+        margin-bottom: 26px;
+      }
+
+      .stat-card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        padding: 18px;
+        border-radius: 12px;
+      }
+
+      .stat-card h3 {
+        font-size: 0.88rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+      }
+      .stat-card .number {
+        font-size: 1.9rem;
+        font-weight: bold;
+      }
+
+      .card-box {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 22px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+        gap: 14px;
+        margin-top: 14px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        background-color: var(--bg-main);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-primary);
+        outline: none;
+        font-size: 0.93rem;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: var(--accent);
+      }
+
+      .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: 0.2s;
+      }
+
+      .btn-primary {
+        background-color: var(--accent);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background-color: var(--accent-hover);
+      }
+      .btn-danger {
+        background-color: var(--danger);
+        color: #fff;
+        padding: 6px 12px;
+        font-size: 0.82rem;
+      }
+      .btn-outline {
+        width: 100%;
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+      .btn-outline:hover {
+        border-color: var(--warning);
+        color: var(--warning);
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+      }
+      th,
+      td {
+        padding: 11px 14px;
+        text-align: right;
+        border-bottom: 1px solid var(--border-color);
+      }
+      th {
+        background-color: rgba(15, 23, 42, 0.6);
+        color: var(--text-secondary);
+        font-size: 0.88rem;
+      }
+
+      .badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: bold;
+        display: inline-block;
+      }
+      .badge-success {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success);
+      }
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--danger);
+      }
+      .badge-warning {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning);
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 68px;
+          padding: 14px 6px;
+        }
+        .brand,
+        .nav-links span.label,
+        .sidebar-footer {
+          display: none;
+        }
+        .nav-links button {
+          justify-content: center;
+          padding: 11px;
+        }
+        .main-content {
+          margin-right: 68px;
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ================= 1. شاشة تسجيل الدخول وإنشاء الحساب ================= -->
+    <section id="authScreen">
+      <div class="auth-box">
+        <div class="auth-header">
+          <h1>🏫 نظام إدارة المدرسة</h1>
+          <p>تسجيل الدخول أو إنشاء حساب جديد للوصول للسيستم</p>
+        </div>
+
+        <div class="auth-tabs">
+          <button
+            id="tabLoginBtn"
+            class="active"
+            onclick="switchAuthTab('login')"
+          >
+            تسجيل الدخول
+          </button>
+          <button id="tabRegisterBtn" onclick="switchAuthTab('register')">
+            حساب جديد
+          </button>
+        </div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input
+              type="email"
+              id="loginEmail"
+              value="admin@school.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="loginPass" value="123456" required />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            دخول للنظام
+          </button>
+        </form>
+
+        <form id="registerForm" class="hidden">
+          <div class="form-group">
+            <label>الاسم بالكامل</label>
+            <input
+              type="text"
+              id="regName"
+              placeholder="الاسم ثلاثي"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <input
+              type="email"
+              id="regEmail"
+              placeholder="name@school.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>الصلاحية</label>
+            <select id="regRole">
+              <option value="admin">مدير النظام (Admin)</option>
+              <option value="teacher">معلم (Teacher)</option>
+              <option value="staff">شؤون إدارية (Staff)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>كلمة المرور</label>
+            <input
+              type="password"
+              id="regPass"
+              placeholder="6 أحرف على الأقل"
+              minlength="6"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">
+            إنشاء الحساب
+          </button>
+        </form>
+
+        <div id="authMsg" class="msg"></div>
+        <div class="demo-hint">
+          حساب تجريبي جاهز: <strong>admin@school.com</strong> / كلمة المرور:
+          <strong>123456</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. السيستم الكامل بعد تسجيل الدخول ================= -->
+    <div id="appScreen" class="hidden">
+      <aside class="sidebar">
+        <div>
+          <div class="brand">🏫 إدارة المدرسة</div>
+          <ul class="nav-links" id="navMenu">
+            <li>
+              <button class="active" data-target="dashboard">
+                <span>📊</span><span class="label">لوحة التحكم</span>
+              </button>
+            </li>
+            <li>
+              <button data-target="departments">
+                <span>🏛️</span><span class="label">الأقسام والمراحل</span>
+              </button>
+            </li>
+            <li>
+              <button data-target="students">
+                <span>🎓</span><span class="label">إدارة الطلاب</span>
+              </button>
+            </li>
+            <li>
+              <button data-target="teachers">
+                <span>👨‍🏫</span><span class="label">المعلمون والإداريون</span>
+              </button>
+            </li>
+            <li>
+              <button data-target="attendance">
+                <span>📅</span><span class="label">الحضور والغياب</span>
+              </button>
+            </li>
+            <li>
+              <button data-target="behavior">
+                <span>⭐</span><span class="label">السلوك والانضباط</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-footer">
+          <button class="btn btn-outline" onclick="resetDemoData()">
+            🔄 إعادة ضبط البيانات
+          </button>
+          <button
+            class="btn btn-danger"
+            style="width: 100%"
+            onclick="logoutUser()"
+          >
+            تسجيل الخروج
+          </button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <!-- لوحة التحكم -->
+        <section id="dashboard" class="page-section active">
+          <div class="topbar">
+            <h1>لوحة التحكم والإحصائيات العامة</h1>
+            <div style="display: flex; gap: 10px; align-items: center">
+              <span class="user-chip" id="currentUserBadge"></span>
+              <span
+                id="todayDate"
+                style="color: var(--text-secondary); font-size: 0.9rem"
+              ></span>
+            </div>
+          </div>
+          <div class="stats-grid" id="statsGrid"></div>
+          <div class="card-box">
+            <h3>آخر سجلات الحضور والغياب</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>الاسم</th>
+                    <th>الصفة</th>
+                    <th>التاريخ</th>
+                    <th>الحالة</th>
+                    <th>ملاحظات</th>
+                  </tr>
+                </thead>
+                <tbody id="recentAttendance"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- الأقسام والمراحل -->
+        <section id="departments" class="page-section">
+          <div class="topbar"><h1>إدارة الأقسام والمراحل الدراسية</h1></div>
+          <div class="card-box">
+            <h3>إضافة قسم جديد</h3>
+            <form id="deptForm" class="form-grid">
+              <input
+                type="text"
+                id="deptName"
+                placeholder="اسم القسم (مثال: قسم البرمجة)"
+                required
+              />
+              <input
+                type="text"
+                id="deptHead"
+                placeholder="رئيس القسم / المشرف"
+                required
+              />
+              <input
+                type="text"
+                id="deptStage"
+                placeholder="المرحلة الدراسية"
+                required
+              />
+              <input
+                type="number"
+                id="deptCapacity"
+                placeholder="السعة الاستيعابية"
+                min="1"
+                required
+              />
+              <button type="submit" class="btn btn-primary">حفظ القسم</button>
+            </form>
+          </div>
+          <div class="card-box">
+            <h3>قائمة الأقسام المسجلة</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>اسم القسم</th>
+                    <th>رئيس القسم</th>
+                    <th>المرحلة</th>
+                    <th>السعة</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="deptTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- إدارة الطلاب -->
+        <section id="students" class="page-section">
+          <div class="topbar">
+            <h1>إدارة شؤون الطلاب</h1>
+            <input
+              type="text"
+              id="searchStudent"
+              placeholder="🔍 ابحث باسم الطالب أو القسم..."
+              style="max-width: 280px"
+            />
+          </div>
+          <div class="card-box">
+            <h3>تسجيل طالب جديد</h3>
+            <form id="studentForm" class="form-grid">
+              <input
+                type="text"
+                id="studentName"
+                placeholder="اسم الطالب رباعي"
+                required
+              />
+              <select id="studentDept" required></select>
+              <input
+                type="text"
+                id="studentGrade"
+                placeholder="الصف الدراسي"
+                required
+              />
+              <input
+                type="tel"
+                id="parentPhone"
+                placeholder="رقم ولي الأمر"
+                required
+              />
+              <button type="submit" class="btn btn-primary">
+                إضافة الطالب
+              </button>
+            </form>
+          </div>
+          <div class="card-box">
+            <h3>سجل الطلاب</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>اسم الطالب</th>
+                    <th>القسم</th>
+                    <th>الصف</th>
+                    <th>ولي الأمر</th>
+                    <th>نقاط السلوك</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="studentsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- المعلمون والإداريون -->
+        <section id="teachers" class="page-section">
+          <div class="topbar"><h1>إدارة المعلمين والإداريين</h1></div>
+          <div class="card-box">
+            <h3>إضافة معلم أو موظف إداري</h3>
+            <form id="staffForm" class="form-grid">
+              <input
+                type="text"
+                id="staffName"
+                placeholder="الاسم بالكامل"
+                required
+              />
+              <select id="staffRole">
+                <option value="معلم">معلم</option>
+                <option value="معلم أول">معلم أول</option>
+                <option value="مشرف قسم">مشرف قسم</option>
+                <option value="إداري">إداري / شؤون</option>
+                <option value="أمن / خدمات">أمن / خدمات</option>
+              </select>
+              <select id="staffDept" required></select>
+              <input
+                type="tel"
+                id="staffPhone"
+                placeholder="رقم الهاتف"
+                required
+              />
+              <button type="submit" class="btn btn-primary">
+                حفظ البيانات
+              </button>
+            </form>
+          </div>
+          <div class="card-box">
+            <h3>قائمة الكادر التعليمي والإداري</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>الاسم</th>
+                    <th>المسمى الوظيفي</th>
+                    <th>القسم التابع له</th>
+                    <th>رقم الهاتف</th>
+                    <th>الحالة</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="staffTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- الحضور والغياب -->
+        <section id="attendance" class="page-section">
+          <div class="topbar"><h1>سجل الحضور والغياب اليومي</h1></div>
+          <div class="card-box">
+            <h3>تسجيل حالة حضور / غياب</h3>
+            <form id="attendanceForm" class="form-grid">
+              <select id="personType" onchange="updatePersonList()">
+                <option value="طالب">طالب</option>
+                <option value="معلم / إداري">معلم / إداري</option>
+              </select>
+              <select id="personName" required></select>
+              <input type="date" id="attDate" required />
+              <select id="attStatus">
+                <option value="حاضر">حاضر</option>
+                <option value="غائب">غائب</option>
+                <option value="متأخر">متأخر</option>
+                <option value="إذن رسمي">إذن رسمي</option>
+              </select>
+              <input
+                type="text"
+                id="attNotes"
+                placeholder="ملاحظات (اختياري)"
+              />
+              <button type="submit" class="btn btn-primary">
+                تسجيل الحالة
+              </button>
+            </form>
+          </div>
+          <div class="card-box">
+            <h3>سجل الحضور والغياب</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>التاريخ</th>
+                    <th>الاسم</th>
+                    <th>الصفة</th>
+                    <th>الحالة</th>
+                    <th>ملاحظات</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="attendanceTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- السلوك والانضباط -->
+        <section id="behavior" class="page-section">
+          <div class="topbar"><h1>سجل السلوك والانضباط الطلابي</h1></div>
+          <div class="card-box">
+            <h3>تسجيل تقييم سلوكي أو مخالفة</h3>
+            <form id="behaviorForm" class="form-grid">
+              <select id="behStudent" required></select>
+              <select id="behType">
+                <option value="إيجابي">سلوك إيجابي / تميز (+)</option>
+                <option value="مخالفة">مخالفة سلوكية (-)</option>
+              </select>
+              <input
+                type="number"
+                id="behPoints"
+                placeholder="عدد النقاط (مثال: 5)"
+                min="1"
+                max="50"
+                required
+              />
+              <input
+                type="text"
+                id="behReason"
+                placeholder="السبب / التفاصيل"
+                required
+              />
+              <button type="submit" class="btn btn-primary">
+                تسجيل وتحديث النقاط
+              </button>
+            </form>
+          </div>
+          <div class="card-box">
+            <h3>سجل السلوكيات</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>التاريخ</th>
+                    <th>اسم الطالب</th>
+                    <th>النوع</th>
+                    <th>النقاط</th>
+                    <th>السبب</th>
+                    <th>إجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="behaviorTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // ================= 1. إعداد Firebase كطبقة جافاسكريبت اختيارية =================
+      const USE_FIREBASE = false; // غيّرها إلى true بعد وضع بيانات مشروع Firebase
+
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID",
+      };
+
+      let firebaseStore = null;
+
+      async function initFirebase() {
+        if (!USE_FIREBASE) return;
+
+        const { initializeApp } =
+          await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+        const { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } =
+          await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+
+        const app = initializeApp(firebaseConfig);
+        const firestore = getFirestore(app);
+
+        firebaseStore = {
+          async getAll(table) {
+            const snap = await getDocs(collection(firestore, table));
+            return snap.docs.map((item) => ({ id: item.id, ...item.data() }));
+          },
+          async add(table, data) {
+            const ref = await addDoc(collection(firestore, table), data);
+            return { id: ref.id, ...data };
+          },
+          async remove(table, id) {
+            await deleteDoc(doc(firestore, table, String(id)));
+          },
+        };
+      }
+
+      // ================= 2. إدارة المستخدمين والصلاحيات =================
+      function initUsers() {
+        if (!localStorage.getItem("sms_all_users")) {
+          localStorage.setItem(
+            "sms_all_users",
+            JSON.stringify([
+              {
+                name: "مدير النظام",
+                email: "admin@school.com",
+                pass: "123456",
+                role: "admin",
+              },
+            ]),
+          );
+        }
+      }
+
+      function switchAuthTab(tab) {
+        const msg = document.getElementById("authMsg");
+        msg.className = "msg";
+        if (tab === "login") {
+          document.getElementById("loginForm").classList.remove("hidden");
+          document.getElementById("registerForm").classList.add("hidden");
+          document.getElementById("tabLoginBtn").classList.add("active");
+          document.getElementById("tabRegisterBtn").classList.remove("active");
+        } else {
+          document.getElementById("loginForm").classList.add("hidden");
+          document.getElementById("registerForm").classList.remove("hidden");
+          document.getElementById("tabLoginBtn").classList.remove("active");
+          document.getElementById("tabRegisterBtn").classList.add("active");
+        }
+      }
+
+      document.getElementById("loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value.trim();
+        const pass = document.getElementById("loginPass").value;
+        const users = JSON.parse(localStorage.getItem("sms_all_users")) || [];
+        const user = users.find((u) => u.email === email && u.pass === pass);
+        const msg = document.getElementById("authMsg");
+
+        if (user) {
+          localStorage.setItem("sms_logged_user", JSON.stringify(user));
+          msg.textContent = `تم تسجيل الدخول بنجاح (${user.name})`;
+          msg.className = "msg success";
+          setTimeout(() => showApp(user), 400);
+        } else {
+          msg.textContent = "بيانات الدخول غير صحيحة";
+          msg.className = "msg error";
+        }
+      });
+
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = document.getElementById("regName").value.trim();
+          const email = document.getElementById("regEmail").value.trim();
+          const role = document.getElementById("regRole").value;
+          const pass = document.getElementById("regPass").value;
+          const users = JSON.parse(localStorage.getItem("sms_all_users")) || [];
+          const msg = document.getElementById("authMsg");
+
+          if (users.some((u) => u.email === email)) {
+            msg.textContent = "هذا البريد الإلكتروني مسجل بالفعل";
+            msg.className = "msg error";
+            return;
+          }
+
+          users.push({ name, email, role, pass });
+          localStorage.setItem("sms_all_users", JSON.stringify(users));
+          msg.textContent = "تم إنشاء الحساب! انتقل لتسجيل الدخول.";
+          msg.className = "msg success";
+          setTimeout(() => switchAuthTab("login"), 900);
+        });
+
+      function showApp(user) {
+        document.getElementById("authScreen").classList.add("hidden");
+        document.getElementById("appScreen").classList.remove("hidden");
+        document.getElementById("currentUserBadge").textContent =
+          `👤 ${user.name} (${user.role})`;
+        DB.init();
+        refreshAllViews();
+      }
+
+      function logoutUser() {
+        localStorage.removeItem("sms_logged_user");
+        document.getElementById("appScreen").classList.add("hidden");
+        document.getElementById("authScreen").classList.remove("hidden");
+      }
+
+      // ================= 3. طبقة البيانات الموحدة (LocalStorage + Firebase) =================
+      const DB = {
+        init() {
+          if (!localStorage.getItem("sms_mod_v1")) {
+            const today = new Date().toISOString().split("T")[0];
+            const initialData = {
+              departments: [
+                {
+                  id: 1,
+                  name: "قسم البرمجة وتطوير الويب",
+                  head: "م. أحمد محمود",
+                  stage: "الثانوي التكنولوجي",
+                  capacity: 120,
+                },
+                {
+                  id: 2,
+                  name: "قسم الشبكات وأمن المعلومات",
+                  head: "م. سارة علي",
+                  stage: "الثانوي التكنولوجي",
+                  capacity: 90,
+                },
+                {
+                  id: 3,
+                  name: "الإدارة وشؤون العاملين",
+                  head: "أ. محمود حسن",
+                  stage: "إداري",
+                  capacity: 30,
+                },
+              ],
+              students: [
+                {
+                  id: 1001,
+                  name: "أسامة محمد",
+                  department: "قسم البرمجة وتطوير الويب",
+                  grade: "الصف الثاني الثانوي",
+                  parentPhone: "01000000001",
+                  behaviorScore: 105,
+                },
+                {
+                  id: 1002,
+                  name: "يوسف خالد",
+                  department: "قسم الشبكات وأمن المعلومات",
+                  grade: "الصف الأول الثانوي",
+                  parentPhone: "01000000002",
+                  behaviorScore: 95,
+                },
+              ],
+              staff: [
+                {
+                  id: 201,
+                  name: "م. أحمد محمود",
+                  role: "معلم أول",
+                  department: "قسم البرمجة وتطوير الويب",
+                  phone: "01100000001",
+                  status: "نشط",
+                },
+                {
+                  id: 202,
+                  name: "أ. محمود حسن",
+                  role: "إداري",
+                  department: "الإدارة وشؤون العاملين",
+                  phone: "01100000002",
+                  status: "نشط",
+                },
+              ],
+              attendance: [
+                {
+                  id: 1,
+                  date: today,
+                  personName: "أسامة محمد",
+                  personType: "طالب",
+                  status: "حاضر",
+                  notes: "-",
+                },
+                {
+                  id: 2,
+                  date: today,
+                  personName: "م. أحمد محمود",
+                  personType: "معلم / إداري",
+                  status: "حاضر",
+                  notes: "-",
+                },
+              ],
+              behavior: [
+                {
+                  id: 1,
+                  date: today,
+                  studentName: "أسامة محمد",
+                  type: "إيجابي",
+                  points: "+5",
+                  reason: "الالتزام وتسليم مشروع الويب في الموعد",
+                },
+              ],
+            };
+
+            for (const [key, value] of Object.entries(initialData)) {
+              localStorage.setItem(`sms_mod_${key}`, JSON.stringify(value));
+            }
+            localStorage.setItem("sms_mod_v1", "true");
+          }
+        },
+
+        getAll(table) {
+          return JSON.parse(localStorage.getItem(`sms_mod_${table}`)) || [];
+        },
+
+        saveAll(table, data) {
+          localStorage.setItem(`sms_mod_${table}`, JSON.stringify(data));
+        },
+
+        add(table, item) {
+          const data = this.getAll(table);
+          item.id = Date.now();
+          data.push(item);
+          this.saveAll(table, data);
+          if (USE_FIREBASE && firebaseStore) {
+            firebaseStore
+              .add(table, item)
+              .catch((err) => console.error("Firebase add error:", err));
+          }
+          return item;
+        },
+
+        remove(table, id) {
+          const data = this.getAll(table).filter((item) => item.id !== id);
+          this.saveAll(table, data);
+          if (USE_FIREBASE && firebaseStore) {
+            firebaseStore
+              .remove(table, id)
+              .catch((err) => console.error("Firebase remove error:", err));
+          }
+        },
+      };
+
+      function resetDemoData() {
+        if (confirm("هل تريد استعادة البيانات الافتراضية للنظام؟")) {
+          localStorage.removeItem("sms_mod_v1");
+          DB.init();
+          refreshAllViews();
+        }
+      }
+
+      // ================= 4. التنقل والواجهات =================
+      document.querySelectorAll("#navMenu button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll("#navMenu button")
+            .forEach((b) => b.classList.remove("active"));
+          document
+            .querySelectorAll(".page-section")
+            .forEach((sec) => sec.classList.remove("active"));
+          btn.classList.add("active");
+          document
+            .getElementById(btn.getAttribute("data-target"))
+            .classList.add("active");
+          refreshAllViews();
+        });
+      });
+
+      function syncDropdowns() {
+        const deptOptions = DB.getAll("departments")
+          .map((d) => `<option value="${d.name}">${d.name}</option>`)
+          .join("");
+        document.getElementById("studentDept").innerHTML = deptOptions;
+        document.getElementById("staffDept").innerHTML = deptOptions;
+
+        document.getElementById("behStudent").innerHTML = DB.getAll("students")
+          .map((s) => `<option value="${s.name}">${s.name}</option>`)
+          .join("");
+
+        updatePersonList();
+      }
+
+      function updatePersonList() {
+        const type = document.getElementById("personType").value;
+        const list =
+          type === "طالب" ? DB.getAll("students") : DB.getAll("staff");
+        document.getElementById("personName").innerHTML = list
+          .map((p) => `<option value="${p.name}">${p.name}</option>`)
+          .join("");
+      }
+
+      function renderDashboard() {
+        document.getElementById("todayDate").textContent =
+          new Date().toLocaleDateString("ar-EG", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+        const stats = [
+          { title: "إجمالي الطلاب", count: DB.getAll("students").length },
+          { title: "المعلمون والإداريون", count: DB.getAll("staff").length },
+          { title: "الأقسام الدراسية", count: DB.getAll("departments").length },
+          {
+            title: "سجلات الحضور والغياب",
+            count: DB.getAll("attendance").length,
+          },
+          { title: "تقارير السلوك", count: DB.getAll("behavior").length },
+        ];
+
+        document.getElementById("statsGrid").innerHTML = stats
+          .map(
+            (s) => `
+        <div class="stat-card"><h3>${s.title}</h3><div class="number">${s.count}</div></div>
+      `,
+          )
+          .join("");
+
+        document.getElementById("recentAttendance").innerHTML = DB.getAll(
+          "attendance",
+        )
+          .slice(-5)
+          .reverse()
+          .map(
+            (a) => `
+        <tr>
+          <td>${a.personName}</td>
+          <td>${a.personType}</td>
+          <td>${a.date}</td>
+          <td><span class="badge ${a.status === "حاضر" ? "badge-success" : a.status === "غائب" ? "badge-danger" : "badge-warning"}">${a.status}</span></td>
+          <td>${a.notes}</td>
+        </tr>
+      `,
+          )
+          .join("");
+      }
+
+      function renderDepartments() {
+        document.getElementById("deptTable").innerHTML = DB.getAll(
+          "departments",
+        )
+          .map(
+            (d) => `
+        <tr>
+          <td>${d.name}</td>
+          <td>${d.head}</td>
+          <td>${d.stage}</td>
+          <td>${d.capacity} طالب</td>
+          <td><button class="btn btn-danger" onclick="deleteItem('departments', ${d.id})">حذف</button></td>
+        </tr>
+      `,
+          )
+          .join("");
+      }
+
+      document.getElementById("deptForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        DB.add("departments", {
+          name: document.getElementById("deptName").value,
+          head: document.getElementById("deptHead").value,
+          stage: document.getElementById("deptStage").value,
+          capacity: document.getElementById("deptCapacity").value,
+        });
+        e.target.reset();
+        refreshAllViews();
+      });
+
+      function renderStudents(filter = "") {
+        const students = DB.getAll("students").filter(
+          (s) => s.name.includes(filter) || s.department.includes(filter),
+        );
+        document.getElementById("studentsTable").innerHTML = students
+          .map(
+            (s) => `
+        <tr>
+          <td>${s.name}</td>
+          <td>${s.department}</td>
+          <td>${s.grade}</td>
+          <td>${s.parentPhone}</td>
+          <td><span class="badge ${s.behaviorScore >= 80 ? "badge-success" : "badge-warning"}">${s.behaviorScore} نقطة</span></td>
+          <td><button class="btn btn-danger" onclick="deleteItem('students', ${s.id})">حذف</button></td>
+        </tr>
+      `,
+          )
+          .join("");
+      }
+
+      document.getElementById("studentForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        DB.add("students", {
+          name: document.getElementById("studentName").value,
+          department: document.getElementById("studentDept").value,
+          grade: document.getElementById("studentGrade").value,
+          parentPhone: document.getElementById("parentPhone").value,
+          behaviorScore: 100,
+        });
+        e.target.reset();
+        refreshAllViews();
+      });
+
+      document
+        .getElementById("searchStudent")
+        .addEventListener("input", (e) => {
+          renderStudents(e.target.value.trim());
+        });
+
+      function renderStaff() {
+        document.getElementById("staffTable").innerHTML = DB.getAll("staff")
+          .map(
+            (m) => `
+        <tr>
+          <td>${m.name}</td>
+          <td>${m.role}</td>
+          <td>${m.department}</td>
+          <td>${m.phone}</td>
+          <td><span class="badge badge-success">${m.status}</span></td>
+          <td><button class="btn btn-danger" onclick="deleteItem('staff', ${m.id})">حذف</button></td>
+        </tr>
+      `,
+          )
+          .join("");
+      }
+
+      document.getElementById("staffForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        DB.add("staff", {
+          name: document.getElementById("staffName").value,
+          role: document.getElementById("staffRole").value,
+          department: document.getElementById("staffDept").value,
+          phone: document.getElementById("staffPhone").value,
+          status: "نشط",
+        });
+        e.target.reset();
+        refreshAllViews();
+      });
+
+      document.getElementById("attDate").value = new Date()
+        .toISOString()
+        .split("T")[0];
+
+      function renderAttendance() {
+        document.getElementById("attendanceTable").innerHTML = DB.getAll(
+          "attendance",
+        )
+          .slice()
+          .reverse()
+          .map((r) => {
+            const badgeClass =
+              r.status === "حاضر"
+                ? "badge-success"
+                : r.status === "غائب"
+                  ? "badge-danger"
+                  : "badge-warning";
+            return `
+          <tr>
+            <td>${r.date}</td>
+            <td>${r.personName}</td>
+            <td>${r.personType}</td>
+            <td><span class="badge ${badgeClass}">${r.status}</span></td>
+            <td>${r.notes || "-"}</td>
+            <td><button class="btn btn-danger" onclick="deleteItem('attendance', ${r.id})">حذف</button></td>
+          </tr>
+        `;
+          })
+          .join("");
+      }
+
+      document
+        .getElementById("attendanceForm")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          DB.add("attendance", {
+            personType: document.getElementById("personType").value,
+            personName: document.getElementById("personName").value,
+            date: document.getElementById("attDate").value,
+            status: document.getElementById("attStatus").value,
+            notes: document.getElementById("attNotes").value || "-",
+          });
+          document.getElementById("attNotes").value = "";
+          refreshAllViews();
+        });
+
+      function renderBehavior() {
+        document.getElementById("behaviorTable").innerHTML = DB.getAll(
+          "behavior",
+        )
+          .slice()
+          .reverse()
+          .map(
+            (b) => `
+        <tr>
+          <td>${b.date}</td>
+          <td>${b.studentName}</td>
+          <td><span class="badge ${b.type === "إيجابي" ? "badge-success" : "badge-danger"}">${b.type}</span></td>
+          <td><strong>${b.points}</strong></td>
+          <td>${b.reason}</td>
+          <td><button class="btn btn-danger" onclick="deleteItem('behavior', ${b.id})">حذف</button></td>
+        </tr>
+      `,
+          )
+          .join("");
+      }
+
+      document
+        .getElementById("behaviorForm")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const studentName = document.getElementById("behStudent").value;
+          const type = document.getElementById("behType").value;
+          const rawPoints = parseInt(
+            document.getElementById("behPoints").value,
+            10,
+          );
+          const signedPoints =
+            type === "إيجابي" ? `+${rawPoints}` : `-${rawPoints}`;
+
+          const students = DB.getAll("students");
+          const target = students.find((s) => s.name === studentName);
+          if (target) {
+            target.behaviorScore =
+              type === "إيجابي"
+                ? target.behaviorScore + rawPoints
+                : Math.max(0, target.behaviorScore - rawPoints);
+            DB.saveAll("students", students);
+          }
+
+          DB.add("behavior", {
+            date: new Date().toISOString().split("T")[0],
+            studentName,
+            type,
+            points: signedPoints,
+            reason: document.getElementById("behReason").value,
+          });
+
+          e.target.reset();
+          refreshAllViews();
+        });
+
+      function deleteItem(table, id) {
+        DB.remove(table, id);
+        refreshAllViews();
+      }
+
+      function refreshAllViews() {
+        syncDropdowns();
+        renderDashboard();
+        renderDepartments();
+        renderStudents(document.getElementById("searchStudent").value.trim());
+        renderStaff();
+        renderAttendance();
+        renderBehavior();
+      }
+
+      // تشغيل التطبيق
+      initFirebase();
+      initUsers();
+      const savedUser = JSON.parse(localStorage.getItem("sms_logged_user"));
+      if (savedUser) {
+        showApp(savedUser);
+      }
+    </script>
+  </body>
+</html>
