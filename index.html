@@ -1,0 +1,3258 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      مدارس الرواد الذكية | المنصة الموحدة للتعلم الرقمي والإدارة المدرسية
+    </title>
+
+    <!-- Google Fonts: Cairo & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FontAwesome 6 Pro CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Tailwind CSS CDN with Custom Extended Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              navy: {
+                50: "#f0f4fa",
+                100: "#dce5f3",
+                200: "#bccde8",
+                700: "#1b356d",
+                800: "#132247",
+                900: "#0b1a3d",
+                950: "#071026",
+              },
+              brand: {
+                blue: "#1d68ff",
+                dark: "#002b66",
+                sky: "#0ea5e9",
+              },
+              lab: {
+                50: "#fff7ed",
+                100: "#ffedd5",
+                200: "#fed7aa",
+                600: "#ea580c",
+                700: "#c2410c",
+                800: "#9a3412",
+              },
+            },
+            fontFamily: {
+              sans: ["Cairo", "Tajawal", "sans-serif"],
+              latin: ["Plus Jakarta Sans", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body
+    class="bg-[#f4f7fb] text-slate-800 min-h-screen flex flex-col font-sans selection:bg-blue-600 selection:text-white"
+  >
+    <!-- Global App Top Bar (Visible when user is authenticated) -->
+    <header
+      id="global-auth-header"
+      class="hidden sticky top-0 z-40 glass-header border-b border-slate-200/90 shadow-2xs no-print"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4"
+      >
+        <!-- Brand Emblem & Title -->
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            onclick="navigateToHubOrDashboard()"
+            class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-navy-900 to-blue-600 text-white flex items-center justify-center text-lg shadow-sm"
+          >
+            <i class="fa-solid fa-graduation-cap"></i>
+          </button>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-black text-navy-900 text-base tracking-tight"
+                >مدارس الرواد الذكية</span
+              >
+              <span
+                class="text-[10px] font-bold bg-blue-50 text-blue-800 px-2 py-0.5 rounded-full border border-blue-200"
+                >المنظومة الرقمية</span
+              >
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium hidden sm:block">
+              بوابة الوصول الموحد والحضور المدرسي الذكي
+            </p>
+          </div>
+        </div>
+
+        <!-- Logged-in User Profile & Role Switcher -->
+        <div class="flex items-center gap-3">
+          <div
+            class="flex items-center gap-2.5 bg-slate-50 border border-slate-200/80 px-3 py-1.5 rounded-2xl"
+          >
+            <div
+              id="header-user-avatar-box"
+              class="w-8 h-8 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-black text-xs shrink-0 overflow-hidden"
+            >
+              <!-- Filled by JS -->
+            </div>
+            <div class="text-right">
+              <div
+                id="header-user-name"
+                class="font-black text-xs text-navy-900"
+              >
+                المستخدم الحالي
+              </div>
+              <div
+                id="header-user-id"
+                class="text-[10px] text-blue-600 font-mono font-bold"
+              >
+                ID: ---
+              </div>
+            </div>
+            <span
+              id="header-user-role-badge"
+              class="mr-1 text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-100 text-blue-800"
+            >
+              الدور
+            </span>
+          </div>
+
+          <!-- Switch Role / Logout Button -->
+          <button
+            type="button"
+            onclick="handleLogout()"
+            class="px-3 py-1.5 rounded-xl border border-rose-200 hover:bg-rose-50 text-rose-600 text-xs font-bold transition flex items-center gap-1.5"
+            title="تسجيل الخروج وتبديل الحساب"
+          >
+            <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+            <span class="hidden sm:inline">تبديل الحساب</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- App Wrapper with Persistent Sidebar Layout -->
+    <div class="flex-1 flex min-h-screen overflow-x-hidden">
+      <!-- ============================================================== -->
+      <!-- FIXED RIGHT SIDEBAR (قائمة التنقل الجانبية الموحدة)             -->
+      <!-- ============================================================== -->
+      <aside
+        id="main-sidebar"
+        class="app-sidebar hidden lg:flex flex-col justify-between bg-white border-l border-slate-200/90 py-6 px-3 sticky top-16 h-[calc(100vh-64px)] select-none shadow-xs"
+      >
+        <!-- Navigation Items Top -->
+        <div class="flex flex-col items-center gap-3">
+          <nav class="flex flex-col gap-2 w-full">
+            <!-- Nav 1: Admin Dashboard -->
+            <button
+              type="button"
+              id="nav-btn-admin"
+              onclick="navigateTo('admin-dashboard-view')"
+              class="sidebar-nav-btn active w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1"
+              title="لوحة الإدارة الشاملة"
+            >
+              <i class="fa-solid fa-shield-halved text-sm"></i>
+              <span class="text-[9px] font-bold">لوحة الإدارة</span>
+            </button>
+
+            <!-- Nav 2: Teacher Portal -->
+            <button
+              type="button"
+              id="nav-btn-teacher"
+              onclick="navigateTo('teacher-portal-view')"
+              class="sidebar-nav-btn w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1 text-slate-500"
+              title="بوابة المعلم والتحضير"
+            >
+              <i class="fa-solid fa-chalkboard-user text-sm"></i>
+              <span class="text-[9px] font-bold">بوابة المعلم</span>
+            </button>
+
+            <!-- Nav 3: Student Portal -->
+            <button
+              type="button"
+              id="nav-btn-student"
+              onclick="navigateTo('student-portal-view')"
+              class="sidebar-nav-btn w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1 text-slate-500"
+              title="بوابة وجدول الطالب"
+            >
+              <i class="fa-solid fa-book-open-reader text-sm"></i>
+              <span class="text-[9px] font-bold">جدول الطالب</span>
+            </button>
+
+            <!-- Nav 4: Parent Portal -->
+            <button
+              type="button"
+              id="nav-btn-parent"
+              onclick="navigateTo('parent-portal-view')"
+              class="sidebar-nav-btn w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1 text-slate-500"
+              title="بوابة ولي الأمر ومتابعة الأبناء"
+            >
+              <i class="fa-solid fa-house-user text-sm"></i>
+              <span class="text-[9px] font-bold">ولي الأمر</span>
+            </button>
+
+            <!-- Nav 5: Portal Selection Hub -->
+            <button
+              type="button"
+              id="nav-btn-portals"
+              onclick="navigateTo('portal-hub-view')"
+              class="sidebar-nav-btn w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1 text-slate-500"
+              title="المنصة الموحدة للتعلم الرقمي"
+            >
+              <i class="fa-solid fa-network-wired text-sm"></i>
+              <span class="text-[9px] font-bold">بوابات الدخول</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Bottom System Status Pill -->
+        <div class="flex flex-col items-center gap-2">
+          <button
+            type="button"
+            onclick="navigateTo('login-view')"
+            class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition"
+            title="تسجيل الدخول / تبديل المستخدم"
+          >
+            <i class="fa-solid fa-user-lock text-xs"></i>
+          </button>
+          <div
+            class="bg-blue-50 border border-blue-200 rounded-xl p-1.5 text-center w-full"
+            title="النظام متصل: الفصل الدراسي الثاني"
+          >
+            <i
+              class="fa-regular fa-circle-check text-blue-600 text-[10px] block"
+            ></i>
+            <span class="text-[8px] font-black text-blue-800 block"
+              >النظام متصل</span
+            >
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <div class="flex-1 flex flex-col min-w-0">
+        <!-- Mobile Bar with Quick Navigation -->
+        <header
+          id="mobile-quick-nav"
+          class="lg:hidden bg-white border-b border-slate-200 px-3 py-2.5 flex items-center justify-between sticky top-0 z-40 no-print"
+        >
+          <div class="flex items-center gap-2">
+            <div
+              class="w-8 h-8 rounded-xl bg-navy-900 text-white flex items-center justify-center text-xs shadow-sm"
+            >
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <span class="text-xs font-black text-navy-900">مدارس الرواد</span>
+          </div>
+
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              onclick="navigateTo('admin-dashboard-view')"
+              class="px-2 py-1 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-700"
+            >
+              الإدارة
+            </button>
+            <button
+              type="button"
+              onclick="navigateTo('teacher-portal-view')"
+              class="px-2 py-1 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-700"
+            >
+              المعلم
+            </button>
+            <button
+              type="button"
+              onclick="navigateTo('student-portal-view')"
+              class="px-2 py-1 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-700"
+            >
+              الطالب
+            </button>
+            <button
+              type="button"
+              onclick="navigateTo('parent-portal-view')"
+              class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-[10px] font-bold"
+            >
+              ولي الأمر
+            </button>
+            <button
+              type="button"
+              onclick="navigateTo('login-view')"
+              class="px-2 py-1 rounded-lg bg-navy-900 text-white text-[10px] font-bold"
+            >
+              دخول
+            </button>
+          </div>
+        </header>
+
+        <main class="flex-1">
+          <!-- ============================================================== -->
+          <!-- GATE SCREEN: UNIFIED LOGIN PORTAL (تسجيل الدخول الإجباري)      -->
+          <!-- Exact implementation of WhatsApp Image 2026-11-20 at 9.40.07 PM-->
+          <!-- ============================================================== -->
+          <section
+            id="login-view"
+            class="view-panel min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-[#eaf2fd] via-[#f4f7fb] to-[#ffffff]"
+          >
+            <div class="w-full max-w-5xl flex flex-col gap-5">
+              <!-- Top Header -->
+              <div class="flex items-center justify-between">
+                <button
+                  type="button"
+                  onclick="navigateTo('portal-hub-view')"
+                  class="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-blue-600 transition"
+                >
+                  <i class="fa-solid fa-arrow-right"></i>
+                  <span>معاينة المنصة الترحيبية</span>
+                </button>
+                <span class="text-xs font-semibold text-slate-400"
+                  >النظام المدرسي المتكامل • بوابة الوصول الموحد</span
+                >
+              </div>
+
+              <!-- Brand Title Center -->
+              <div class="text-center">
+                <div class="inline-flex items-center gap-3 mb-1.5">
+                  <div
+                    class="w-11 h-11 rounded-2xl bg-navy-900 text-white flex items-center justify-center text-xl shadow-sm"
+                  >
+                    <i class="fa-solid fa-graduation-cap"></i>
+                  </div>
+                  <h2 class="text-2xl sm:text-3xl font-black text-navy-900">
+                    مجمع الكمال التعليمي النموذجي
+                  </h2>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-500 font-medium">
+                  المنظومة الرقمية للتعليم الذكي والشؤون الأكاديمية
+                </p>
+              </div>
+
+              <!-- Main Split Card -->
+              <div
+                class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[520px]"
+              >
+                <!-- Left Showcase Card (5 Cols) -->
+                <div
+                  class="lg:col-span-5 bg-gradient-to-br from-navy-900 via-navy-800 to-blue-900 text-white p-7 flex flex-col justify-between relative overflow-hidden"
+                >
+                  <div class="relative z-10 flex items-center justify-between">
+                    <span
+                      class="text-[11px] font-bold bg-white/10 px-3 py-1 rounded-full backdrop-blur-xs text-blue-200"
+                    >
+                      الفصل الدراسي الثاني • 2025/2026
+                    </span>
+                    <i
+                      class="fa-solid fa-certificate text-blue-400 text-sm"
+                    ></i>
+                  </div>
+
+                  <div
+                    class="relative z-10 my-6 bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-xs"
+                  >
+                    <div
+                      class="w-full h-36 rounded-xl overflow-hidden mb-3.5 relative bg-slate-800"
+                    >
+                      <img
+                        src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=300&fit=crop"
+                        alt="Classroom"
+                        class="w-full h-full object-cover opacity-85"
+                      />
+                      <div
+                        class="absolute inset-0 bg-gradient-to-t from-navy-950/90 to-transparent flex items-end p-3"
+                      >
+                        <p
+                          class="text-[11px] font-black leading-tight text-white"
+                        >
+                          بيئة تعليمية ملهمة، تبني المستقبل خطوة بخطوة
+                        </p>
+                      </div>
+                    </div>
+                    <span class="text-[10px] text-blue-300 font-bold block mb-1"
+                      >الريادة الأكاديمية</span
+                    >
+                    <p
+                      class="text-xs text-slate-200 font-medium leading-relaxed"
+                    >
+                      فصول ذكية ومعامل تخصصية متصلة بمنظومة سحابية متقدمة لرصد
+                      التعلم لحظياً.
+                    </p>
+                  </div>
+
+                  <div class="relative z-10 space-y-3">
+                    <div class="grid grid-cols-2 gap-2 text-center">
+                      <div
+                        class="bg-white/10 rounded-xl p-2.5 backdrop-blur-xs border border-white/5"
+                      >
+                        <span class="text-lg font-black block text-white"
+                          >+1,400</span
+                        >
+                        <span class="text-[10px] text-blue-200"
+                          >طالب وطالبة مفعلين</span
+                        >
+                      </div>
+                      <div
+                        class="bg-white/10 rounded-xl p-2.5 backdrop-blur-xs border border-white/5"
+                      >
+                        <span class="text-lg font-black block text-emerald-400"
+                          >99.8%</span
+                        >
+                        <span class="text-[10px] text-blue-200"
+                          >جاهزية المنظومة السحابية</span
+                        >
+                      </div>
+                    </div>
+
+                    <div
+                      class="bg-blue-600/30 border border-blue-400/20 rounded-xl p-2.5 flex items-center justify-between text-[11px]"
+                    >
+                      <span class="flex items-center gap-1.5 font-bold">
+                        <span
+                          class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"
+                        ></span>
+                        <span>التحديث الفوري للجداول</span>
+                      </span>
+                      <span class="text-blue-200 text-[10px]"
+                        >متصل بالمزامنة المدرسية اليومية</span
+                      >
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between text-[10px] text-blue-300 pt-2 border-t border-white/10"
+                    >
+                      <span>الإصدار الأكاديمي v4.8</span>
+                      <span
+                        ><i class="fa-solid fa-lock text-[9px]"></i> اتصال مشفر
+                        256-bit</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Login Form (7 Cols) -->
+                <div
+                  class="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between"
+                >
+                  <div>
+                    <!-- 4 Role Switch Tabs (Student / Teacher / Admin / Parent) -->
+                    <div class="mb-5">
+                      <label class="block text-xs font-bold text-slate-500 mb-2"
+                        >اختر نوع الحساب للمتابعة:</label
+                      >
+                      <div
+                        class="grid grid-cols-4 p-1 bg-slate-100 rounded-2xl gap-1 text-center"
+                      >
+                        <button
+                          type="button"
+                          id="login-tab-student"
+                          onclick="setLoginRole('student')"
+                          class="py-2 px-1 rounded-xl text-[11px] font-black transition flex items-center justify-center gap-1 bg-navy-900 text-white shadow-sm"
+                        >
+                          <i class="fa-solid fa-graduation-cap"></i>
+                          <span>الطالب</span>
+                        </button>
+                        <button
+                          type="button"
+                          id="login-tab-teacher"
+                          onclick="setLoginRole('teacher')"
+                          class="py-2 px-1 rounded-xl text-[11px] font-black transition flex items-center justify-center gap-1 text-slate-600 hover:text-navy-900"
+                        >
+                          <i class="fa-solid fa-chalkboard-user"></i>
+                          <span>المعلم</span>
+                        </button>
+                        <button
+                          type="button"
+                          id="login-tab-admin"
+                          onclick="setLoginRole('admin')"
+                          class="py-2 px-1 rounded-xl text-[11px] font-black transition flex items-center justify-center gap-1 text-slate-600 hover:text-navy-900"
+                        >
+                          <i class="fa-solid fa-shield-halved"></i>
+                          <span>الإدارة</span>
+                        </button>
+                        <button
+                          type="button"
+                          id="login-tab-parent"
+                          onclick="setLoginRole('parent')"
+                          class="py-2 px-1 rounded-xl text-[11px] font-black transition flex items-center justify-center gap-1 text-slate-600 hover:text-navy-900"
+                        >
+                          <i class="fa-solid fa-house-user"></i>
+                          <span>ولي الأمر</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Form Title & Help Prompt -->
+                    <div class="mb-4">
+                      <h3
+                        id="login-title-heading"
+                        class="text-lg font-black text-navy-900 flex items-center gap-2"
+                      >
+                        <span
+                          class="w-2.5 h-2.5 rounded-full bg-blue-600"
+                        ></span>
+                        <span>تسجيل الدخول - بوابة الطالب</span>
+                      </h3>
+                      <p
+                        id="login-subtitle-heading"
+                        class="text-xs text-slate-500 mt-1 font-medium"
+                      >
+                        يرجى كتابة الاسم الثلاثي المعتمد مع الرمز التعريفي
+                        الصادر من شؤون الطلاب.
+                      </p>
+                    </div>
+
+                    <!-- Actual Form -->
+                    <form
+                      id="unified-login-form"
+                      onsubmit="handleLoginSubmit(event)"
+                      class="space-y-3.5"
+                    >
+                      <div>
+                        <label
+                          id="login-label-name"
+                          class="block text-xs font-bold text-slate-700 mb-1"
+                          >الاسم بالكامل
+                          <span class="text-rose-500">*</span></label
+                        >
+                        <div class="relative">
+                          <input
+                            type="text"
+                            id="login-input-name"
+                            required
+                            value="أحمد محمود الشريف"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition"
+                            placeholder="مثال: أحمد محمود الشريف"
+                          />
+                          <div
+                            class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"
+                          >
+                            <i class="fa-regular fa-user"></i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div class="flex items-center justify-between mb-1">
+                          <label
+                            id="login-label-code"
+                            class="text-xs font-bold text-slate-700"
+                            >كود الدخول المدرسي / الكود التعريفي
+                            <span class="text-rose-500">*</span></label
+                          >
+                          <span
+                            class="text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md"
+                            >صيغة: 6-10 أرقام وحروف</span
+                          >
+                        </div>
+                        <div class="relative">
+                          <input
+                            type="text"
+                            id="login-input-code"
+                            required
+                            value="STD-2024-884"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-mono font-semibold focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition"
+                            placeholder="أدخل الرمز التعريفي الخاص بك"
+                          />
+                          <div
+                            class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"
+                          >
+                            <i class="fa-solid fa-id-card"></i>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        class="flex items-center justify-between text-xs text-slate-500 pt-1"
+                      >
+                        <label
+                          class="flex items-center gap-2 cursor-pointer font-medium"
+                        >
+                          <input
+                            type="checkbox"
+                            checked
+                            class="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                          />
+                          <span>تذكر بياناتي على هذا الجهاز</span>
+                        </label>
+                        <a
+                          href="javascript:void(0)"
+                          class="text-blue-600 hover:underline font-bold flex items-center gap-1"
+                        >
+                          <i
+                            class="fa-regular fa-circle-question text-[11px]"
+                          ></i>
+                          <span>نسيت كود الدخول؟</span>
+                        </a>
+                      </div>
+
+                      <button
+                        type="submit"
+                        class="w-full py-3 px-4 bg-navy-900 hover:bg-navy-800 text-white rounded-xl text-xs sm:text-sm font-black shadow-md shadow-navy-900/15 transition flex items-center justify-center gap-2"
+                      >
+                        <span>تسجيل الدخول إلى البوابة</span>
+                        <i class="fa-solid fa-arrow-left"></i>
+                      </button>
+                    </form>
+
+                    <!-- Quick 1-Click Fast Demo Roles (للتجربة المباشرة بضغطة زر) -->
+                    <div class="mt-5 pt-4 border-t border-slate-100">
+                      <div class="flex items-center gap-1.5 mb-2.5">
+                        <i
+                          class="fa-solid fa-wand-magic-sparkles text-blue-600 text-xs"
+                        ></i>
+                        <span class="text-[11px] font-black text-slate-700"
+                          >معاينة وتجربة سريعة بضغطة واحدة:</span
+                        >
+                      </div>
+                      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <!-- Demo Admin -->
+                        <button
+                          type="button"
+                          onclick="quickLoginDemo('admin')"
+                          class="p-2 text-right bg-blue-50/70 hover:bg-blue-100 border border-blue-200 rounded-xl transition group"
+                        >
+                          <div
+                            class="text-[10px] font-black text-navy-900 flex items-center justify-between"
+                          >
+                            <span>الإدارة</span>
+                            <i
+                              class="fa-solid fa-shield-halved text-blue-600 text-[10px]"
+                            ></i>
+                          </div>
+                          <div
+                            class="text-[9px] text-slate-500 font-mono mt-0.5"
+                          >
+                            ADM-1001
+                          </div>
+                        </button>
+
+                        <!-- Demo Teacher -->
+                        <button
+                          type="button"
+                          onclick="quickLoginDemo('teacher')"
+                          class="p-2 text-right bg-indigo-50/70 hover:bg-indigo-100 border border-indigo-200 rounded-xl transition group"
+                        >
+                          <div
+                            class="text-[10px] font-black text-navy-900 flex items-center justify-between"
+                          >
+                            <span>المعلم</span>
+                            <i
+                              class="fa-solid fa-chalkboard-user text-indigo-600 text-[10px]"
+                            ></i>
+                          </div>
+                          <div
+                            class="text-[9px] text-slate-500 font-mono mt-0.5"
+                          >
+                            TC-5510
+                          </div>
+                        </button>
+
+                        <!-- Demo Student -->
+                        <button
+                          type="button"
+                          onclick="quickLoginDemo('student')"
+                          class="p-2 text-right bg-sky-50/70 hover:bg-sky-100 border border-sky-200 rounded-xl transition group"
+                        >
+                          <div
+                            class="text-[10px] font-black text-navy-900 flex items-center justify-between"
+                          >
+                            <span>الطالب</span>
+                            <i
+                              class="fa-solid fa-graduation-cap text-sky-600 text-[10px]"
+                            ></i>
+                          </div>
+                          <div
+                            class="text-[9px] text-slate-500 font-mono mt-0.5"
+                          >
+                            STD-2024-884
+                          </div>
+                        </button>
+
+                        <!-- Demo Parent -->
+                        <button
+                          type="button"
+                          onclick="quickLoginDemo('parent')"
+                          class="p-2 text-right bg-emerald-50/70 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition group"
+                        >
+                          <div
+                            class="text-[10px] font-black text-navy-900 flex items-center justify-between"
+                          >
+                            <span>ولي الأمر</span>
+                            <i
+                              class="fa-solid fa-house-user text-emerald-600 text-[10px]"
+                            ></i>
+                          </div>
+                          <div
+                            class="text-[9px] text-slate-500 font-mono mt-0.5"
+                          >
+                            0501234567
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================================== -->
+          <!-- SCREEN 1: PORTAL SELECTION HUB (المنصة الموحدة للتعلم الرقمي)  -->
+          <!-- Exact implementation of WhatsApp Image 2026-11-20 at 9.40.08 PM-->
+          <!-- ============================================================== -->
+          <section
+            id="portal-hub-view"
+            class="view-panel hidden min-h-screen flex flex-col justify-between p-4 sm:p-6 lg:p-10 bg-gradient-to-b from-[#f8faff] via-[#f2f6fc] to-[#eef4fb]"
+          >
+            <!-- Hub Top Header -->
+            <div
+              class="max-w-6xl w-full mx-auto flex items-center justify-between pb-6 border-b border-slate-200/60"
+            >
+              <div class="flex items-center gap-3.5">
+                <div
+                  class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-navy-900 to-blue-600 text-white flex items-center justify-center text-xl shadow-lg shadow-blue-600/20"
+                >
+                  <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-black text-navy-900 tracking-tight">
+                    مدارس الرواد الذكية
+                  </h2>
+                  <p class="text-xs text-slate-500 font-semibold">
+                    المنصة الموحدة للتعلم الرقمي
+                  </p>
+                </div>
+              </div>
+
+              <!-- Top Nav Items -->
+              <div
+                class="hidden md:flex items-center gap-6 text-xs font-bold text-slate-600"
+              >
+                <span
+                  class="text-blue-600 border-b-2 border-blue-600 pb-1 cursor-pointer"
+                  >الرئيسية والمراحل</span
+                >
+                <span
+                  class="hover:text-blue-600 cursor-pointer"
+                  onclick="navigateTo('student-portal-view')"
+                  >بوابة الطلاب</span
+                >
+                <span
+                  class="hover:text-blue-600 cursor-pointer"
+                  onclick="navigateTo('teacher-portal-view')"
+                  >بوابة المعلمين</span
+                >
+                <span
+                  class="hover:text-blue-600 cursor-pointer"
+                  onclick="navigateTo('parent-portal-view')"
+                  >بوابة أولياء الأمور</span
+                >
+                <span
+                  class="hover:text-blue-600 cursor-pointer"
+                  onclick="navigateTo('admin-dashboard-view')"
+                  >الإدارة والأقسام</span
+                >
+              </div>
+
+              <!-- Admission Pill -->
+              <div
+                class="flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-bold shadow-2xs"
+              >
+                <span
+                  class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+                ></span>
+                <span>نظام القبول متاح</span>
+              </div>
+            </div>
+
+            <!-- Hub Hero Section -->
+            <div class="max-w-4xl w-full mx-auto text-center my-8">
+              <div
+                class="inline-flex flex-wrap items-center justify-center gap-2 mb-5"
+              >
+                <span
+                  class="bg-blue-50 text-blue-800 border border-blue-200 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs"
+                >
+                  <i class="fa-solid fa-award text-blue-600"></i>
+                  <span>جائزة التميز الرقمي للتعليم</span>
+                </span>
+                <span
+                  class="bg-white text-slate-700 border border-slate-200 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs"
+                >
+                  <i class="fa-regular fa-calendar-check text-blue-600"></i>
+                  <span>العام الأكاديمي 1446-1447هـ</span>
+                </span>
+                <span
+                  class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs"
+                >
+                  <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                  <span>منظومة رقمية معتمدة وزارياً</span>
+                </span>
+              </div>
+
+              <h1
+                class="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight"
+              >
+                مرحباً بكم في منصة التعليم والإدارة المدرسية الموحدة
+              </h1>
+              <p
+                class="text-sm sm:text-base text-slate-600 mt-4 max-w-2xl mx-auto font-medium leading-relaxed"
+              >
+                بيئة رقمية متكاملة لمدارس الرواد الذكية، تدمج بين التميز المعرفي
+                للطلاب، والتمكين الأكاديمي للمعلمين، والشراكة الفعالة مع أولياء
+                الأمور، والإشراف المؤسسي فائق الدقة.
+              </p>
+            </div>
+
+            <!-- 4 Portal Cards Grid (Student, Teacher, Admin, Parent) -->
+            <div
+              class="max-w-6xl w-full mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 my-6"
+            >
+              <!-- Portal 1: Student -->
+              <div
+                class="bg-white rounded-3xl p-6 border border-slate-200 card-shadow card-hover flex flex-col justify-between"
+              >
+                <div>
+                  <span
+                    class="text-[10px] font-bold bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full border border-blue-100"
+                    >بوابة المتعلمين</span
+                  >
+                  <h3 class="text-lg font-black text-navy-900 mt-2 mb-1">
+                    بوابة الطالب الذكية
+                  </h3>
+                  <p class="text-xs text-slate-500 font-medium mb-4">
+                    الجداول اليومية، المعامل، وسجل الحضور والتقويم الشهري.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onclick="navigateTo('student-portal-view')"
+                  class="w-full py-2.5 px-3 bg-navy-900 hover:bg-navy-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2"
+                >
+                  <span>دخول الطالب</span>
+                  <i class="fa-solid fa-arrow-left"></i>
+                </button>
+              </div>
+
+              <!-- Portal 2: Teacher -->
+              <div
+                class="bg-white rounded-3xl p-6 border border-indigo-200/90 card-shadow card-hover flex flex-col justify-between"
+              >
+                <div>
+                  <span
+                    class="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-100"
+                    >الهيئة التدريسية</span
+                  >
+                  <h3 class="text-lg font-black text-navy-900 mt-2 mb-1">
+                    بوابة المعلم والمدرب
+                  </h3>
+                  <p class="text-xs text-slate-500 font-medium mb-4">
+                    التحضير الرقمي، الرصد اللحظي للحضور، وتدوين السلوك.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onclick="navigateTo('teacher-portal-view')"
+                  class="w-full py-2.5 px-3 bg-[#0a4d68] hover:bg-[#083c52] text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2"
+                >
+                  <span>دخول المعلم</span>
+                  <i class="fa-solid fa-arrow-left"></i>
+                </button>
+              </div>
+
+              <!-- Portal 3: Admin -->
+              <div
+                class="bg-white rounded-3xl p-6 border border-slate-200 card-shadow card-hover flex flex-col justify-between"
+              >
+                <div>
+                  <span
+                    class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full border border-slate-200"
+                    >القيادة والإشراف</span
+                  >
+                  <h3 class="text-lg font-black text-navy-900 mt-2 mb-1">
+                    لوحة تحكم الإدارة
+                  </h3>
+                  <p class="text-xs text-slate-500 font-medium mb-4">
+                    المؤشرات العامة، إضافة الأقسام والطلاب، والتقارير التنفيذية.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onclick="navigateTo('admin-dashboard-view')"
+                  class="w-full py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2"
+                >
+                  <span>دخول الإدارة</span>
+                  <i class="fa-solid fa-arrow-left"></i>
+                </button>
+              </div>
+
+              <!-- Portal 4: Parent -->
+              <div
+                class="bg-white rounded-3xl p-6 border border-emerald-200/90 card-shadow card-hover flex flex-col justify-between"
+              >
+                <div>
+                  <span
+                    class="text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-100"
+                    >الشراكة الأسرية</span
+                  >
+                  <h3 class="text-lg font-black text-navy-900 mt-2 mb-1">
+                    بوابة ولي الأمر
+                  </h3>
+                  <p class="text-xs text-slate-500 font-medium mb-4">
+                    متابعة غياب وحضور الأبناء، ملاحظات السلوك، ورفع الأعذار.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onclick="navigateTo('parent-portal-view')"
+                  class="w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2"
+                >
+                  <span>دخول ولي الأمر</span>
+                  <i class="fa-solid fa-arrow-left"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Statistics Bar -->
+            <div
+              class="max-w-6xl w-full mx-auto bg-white rounded-3xl p-5 border border-slate-200/90 card-shadow grid grid-cols-2 md:grid-cols-4 gap-4 text-center my-6"
+            >
+              <div class="flex items-center justify-center gap-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg shrink-0"
+                >
+                  <i class="fa-solid fa-user-group"></i>
+                </div>
+                <div class="text-right">
+                  <div class="text-xl font-black text-navy-900">+2,480</div>
+                  <div class="text-[11px] font-semibold text-slate-400">
+                    طالب وطالبة مسجلين
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-center gap-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg shrink-0"
+                >
+                  <i class="fa-solid fa-id-badge"></i>
+                </div>
+                <div class="text-right">
+                  <div class="text-xl font-black text-navy-900">142</div>
+                  <div class="text-[11px] font-semibold text-slate-400">
+                    معلماً ومدرباً معتمداً
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-center gap-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shrink-0"
+                >
+                  <i class="fa-solid fa-flask"></i>
+                </div>
+                <div class="text-right">
+                  <div class="text-xl font-black text-navy-900">36</div>
+                  <div class="text-[11px] font-semibold text-slate-400">
+                    معملاً رقمياً وتطبيقياً
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-center gap-3">
+                <div
+                  class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shrink-0"
+                >
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                </div>
+                <div class="text-right">
+                  <div class="text-xl font-black text-emerald-600">99.4%</div>
+                  <div class="text-[11px] font-semibold text-slate-400">
+                    نسبة الانضباط اليومي
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================================== -->
+          <!-- SCREEN 3: CENTRAL ADMIN DASHBOARD (لوحة التحكم الإدارية المركزية)-->
+          <!-- Exact implementation of WhatsApp Image 2026-11-20 at 9.40.07 PM (1)-->
+          <!-- ============================================================== -->
+          <section
+            id="admin-dashboard-view"
+            class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6"
+          >
+            <!-- Dashboard Header & Top Controls -->
+            <div
+              class="flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+            >
+              <div>
+                <span class="text-[11px] font-bold text-blue-600 block mb-1">
+                  <i class="fa-solid fa-circle text-[7px] ml-1"></i> النظام
+                  الإداري الموحد • الإشراف الأكاديمي
+                </span>
+                <h2
+                  class="text-2xl sm:text-3xl font-black text-navy-900 tracking-tight"
+                >
+                  لوحة التحكم الإدارية المركزية - مدارس الرواد الذكية
+                </h2>
+                <div
+                  class="flex items-center gap-3 mt-1.5 text-xs text-slate-500 font-semibold"
+                >
+                  <span>الأربعاء، 12 شعبان 1446هـ الموافق 12 فبراير 2026م</span>
+                  <span>•</span>
+                  <span class="text-blue-600 font-bold flex items-center gap-1">
+                    <span
+                      class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"
+                    ></span>
+                    <span>محدث لحظياً: منذ دقيقتين</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Dropdowns and Action Buttons -->
+              <div class="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onclick="openAddDeptModal()"
+                  class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm"
+                >
+                  <i class="fa-solid fa-folder-plus text-xs"></i>
+                  <span>إضافة قسم / تخصص</span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick="openAddStudentModal()"
+                  class="px-4 py-2 bg-navy-900 hover:bg-navy-800 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm"
+                >
+                  <i class="fa-solid fa-user-plus text-xs"></i>
+                  <span>تسجيل طالب جديد</span>
+                </button>
+
+                <button
+                  type="button"
+                  onclick="exportExecutiveReport()"
+                  class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-2xs"
+                >
+                  <i class="fa-solid fa-download text-xs"></i>
+                  <span>تقرير تنفيذي</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 4 Top KPI Cards (Matching Image 1) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div
+                class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex flex-col justify-between"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-slate-400"
+                    >إجمالي الطلاب المقيدين</span
+                  >
+                  <div
+                    class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-base"
+                  >
+                    <i class="fa-solid fa-users"></i>
+                  </div>
+                </div>
+                <div class="my-2">
+                  <div
+                    id="kpi-total-students"
+                    class="text-3xl font-black text-navy-900"
+                  >
+                    1,450
+                  </div>
+                  <span class="text-xs text-slate-400 font-semibold"
+                    >طالباً وطالبة</span
+                  >
+                </div>
+                <div
+                  class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold"
+                >
+                  <span
+                    >السنة الأولى:
+                    <strong class="text-slate-800 font-mono">780</strong></span
+                  >
+                  <span
+                    >السنة الثانية:
+                    <strong class="text-slate-800 font-mono">670</strong></span
+                  >
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex flex-col justify-between"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-slate-400"
+                    >نسبة الحضور العامة لليوم</span
+                  >
+                  <span
+                    class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100"
+                    >+0.7% من الأمس</span
+                  >
+                </div>
+                <div class="my-2">
+                  <div class="text-3xl font-black text-navy-900">95.8%</div>
+                  <div
+                    class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden"
+                  >
+                    <div
+                      class="bg-blue-600 h-full rounded-full"
+                      style="width: 95.8%"
+                    ></div>
+                  </div>
+                </div>
+                <div
+                  class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold"
+                >
+                  <span>الهدف الوزاري: 93%</span>
+                  <span class="text-blue-600 font-bold">أداء استثنائي</span>
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex flex-col justify-between"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-slate-400"
+                    >حالات الغياب المسجلة اليوم</span
+                  >
+                  <div
+                    class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-base"
+                  >
+                    <i class="fa-solid fa-user-xmark"></i>
+                  </div>
+                </div>
+                <div class="my-2">
+                  <div class="text-3xl font-black text-navy-900">28</div>
+                  <span class="text-xs text-rose-600 font-semibold"
+                    >حالة فقط (%4.2)</span
+                  >
+                </div>
+                <div
+                  class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold"
+                >
+                  <span
+                    >بعذر رسمي:
+                    <strong class="text-slate-800 font-mono">19</strong></span
+                  >
+                  <span class="text-rose-600"
+                    >دون عذر: <strong class="font-mono">9</strong></span
+                  >
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex flex-col justify-between"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-slate-400"
+                    >الأقسام والمعامل التفاعلية</span
+                  >
+                  <div
+                    class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-base"
+                  >
+                    <i class="fa-solid fa-microscope"></i>
+                  </div>
+                </div>
+                <div class="my-2">
+                  <div
+                    id="kpi-total-departments"
+                    class="text-3xl font-black text-navy-900"
+                  >
+                    12
+                  </div>
+                  <span class="text-xs text-indigo-600 font-semibold"
+                    >قسماً نشطاً</span
+                  >
+                </div>
+                <div
+                  class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold"
+                >
+                  <span>24 فصلاً ذكياً</span>
+                  <span>8 معامل تخصصية</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Middle Section: Frequent Absence Alerts + Weekly Attendance Bar Chart -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <!-- Absence Alerts -->
+              <div
+                class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 card-shadow p-6 flex flex-col justify-between"
+              >
+                <div>
+                  <div
+                    class="flex items-center justify-between pb-3 border-b border-slate-100"
+                  >
+                    <div class="flex items-center gap-2.5">
+                      <div
+                        class="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-xs"
+                      >
+                        <i class="fa-solid fa-bell"></i>
+                      </div>
+                      <div>
+                        <h4 class="font-black text-navy-900 text-sm">
+                          تنبيهات الغياب المتكرر
+                        </h4>
+                        <p class="text-[10px] text-slate-400">
+                          رصد آلي للطلاب الذين تجاوزوا 3 أيام متصلة
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      class="text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full"
+                      >3 حالات حرجة</span
+                    >
+                  </div>
+                  <div
+                    id="absence-alerts-container"
+                    class="space-y-3 pt-4"
+                  ></div>
+                </div>
+                <button
+                  type="button"
+                  onclick="sendBatchGuardianAlerts()"
+                  class="w-full mt-4 py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-xs font-bold border border-blue-200 transition flex items-center justify-center gap-2"
+                >
+                  <i class="fa-regular fa-paper-plane"></i>
+                  <span>إرسال إشعار عام للغياب غير المبرر (دفعة واحدة)</span>
+                </button>
+              </div>
+
+              <!-- Bar Chart -->
+              <div
+                class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 card-shadow p-6 flex flex-col justify-between"
+              >
+                <div>
+                  <div
+                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100"
+                  >
+                    <div>
+                      <h4 class="font-black text-navy-900 text-base">
+                        تحليل مؤشر الحضور الأسبوعي والشهري
+                      </h4>
+                      <p class="text-xs text-slate-400">
+                        توزيع نسب الانضباط اليومي لجميع المراحل الدراسية لآخر 5
+                        أيام دراسية
+                      </p>
+                    </div>
+                    <div
+                      class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold text-slate-600"
+                    >
+                      <button
+                        type="button"
+                        class="px-2.5 py-1 rounded-lg bg-white text-navy-900 shadow-2xs"
+                      >
+                        أسبوعي
+                      </button>
+                      <button
+                        type="button"
+                        class="px-2.5 py-1 rounded-lg hover:text-navy-900"
+                      >
+                        شهري
+                      </button>
+                      <button
+                        type="button"
+                        class="px-2.5 py-1 rounded-lg hover:text-navy-900"
+                      >
+                        مقارنة فصول
+                      </button>
+                    </div>
+                  </div>
+                  <div class="pt-6 pb-2">
+                    <div
+                      class="h-48 flex items-end justify-between gap-4 px-4 sm:px-8"
+                    >
+                      <div
+                        class="flex-1 flex flex-col items-center gap-2 h-full justify-end"
+                      >
+                        <span class="text-[11px] font-bold text-slate-500"
+                          >97.0%</span
+                        >
+                        <div
+                          class="w-full max-w-[44px] bg-[#38bdf8] rounded-t-lg transition-all duration-500"
+                          style="height: 82%"
+                        ></div>
+                        <span class="text-xs font-bold text-slate-600"
+                          >الأحد</span
+                        >
+                      </div>
+                      <div
+                        class="flex-1 flex flex-col items-center gap-2 h-full justify-end"
+                      >
+                        <span class="text-[11px] font-bold text-slate-500"
+                          >96.0%</span
+                        >
+                        <div
+                          class="w-full max-w-[44px] bg-[#38bdf8] rounded-t-lg transition-all duration-500"
+                          style="height: 78%"
+                        ></div>
+                        <span class="text-xs font-bold text-slate-600"
+                          >الإثنين</span
+                        >
+                      </div>
+                      <div
+                        class="flex-1 flex flex-col items-center gap-2 h-full justify-end"
+                      >
+                        <span class="text-[11px] font-bold text-slate-500"
+                          >95.5%</span
+                        >
+                        <div
+                          class="w-full max-w-[44px] bg-[#38bdf8] rounded-t-lg transition-all duration-500"
+                          style="height: 75%"
+                        ></div>
+                        <span class="text-xs font-bold text-slate-600"
+                          >الثلاثاء</span
+                        >
+                      </div>
+                      <div
+                        class="flex-1 flex flex-col items-center gap-2 h-full justify-end"
+                      >
+                        <span
+                          class="text-[11px] font-black text-navy-900 bg-blue-100 px-2 py-0.5 rounded-full"
+                          >95.8% (اليوم)</span
+                        >
+                        <div
+                          class="w-full max-w-[44px] bg-[#0b1a3d] rounded-t-lg shadow-md shadow-navy-900/20 transition-all duration-500"
+                          style="height: 76%"
+                        ></div>
+                        <span class="text-xs font-black text-navy-900"
+                          >الأربعاء</span
+                        >
+                      </div>
+                      <div
+                        class="flex-1 flex flex-col items-center gap-2 h-full justify-end"
+                      >
+                        <span class="text-[11px] font-bold text-slate-400"
+                          >96.1%</span
+                        >
+                        <div
+                          class="w-full max-w-[44px] bg-[#dbeafe] rounded-t-lg border-t-2 border-dashed border-blue-400 transition-all duration-500"
+                          style="height: 79%"
+                        ></div>
+                        <span class="text-xs font-bold text-slate-400"
+                          >الخميس</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs font-semibold text-slate-500 gap-2"
+                >
+                  <div class="flex items-center gap-4">
+                    <span class="flex items-center gap-1.5"
+                      ><span class="w-3 h-3 rounded-sm bg-[#0b1a3d]"></span
+                      ><span>الحضور الفعلي</span></span
+                    >
+                    <span class="flex items-center gap-1.5"
+                      ><span class="w-3 h-3 rounded-sm bg-[#38bdf8]"></span
+                      ><span>الأيام السابقة</span></span
+                    >
+                    <span class="flex items-center gap-1.5"
+                      ><span
+                        class="w-3 h-3 rounded-sm bg-[#dbeafe] border border-blue-300"
+                      ></span
+                      ><span>التقدير التنبؤي</span></span
+                    >
+                  </div>
+                  <div
+                    class="bg-slate-50 px-3 py-1 rounded-lg border border-slate-200"
+                  >
+                    المتوسط العام:
+                    <strong class="text-navy-900 font-mono">96.1%</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Specialized Departments & Classes -->
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-black text-navy-900">
+                    إدارة الأقسام التخصصية والصفوف
+                  </h3>
+                  <p class="text-xs text-slate-400">
+                    توزيع الملاكات التعليمية وقوة الفصول الدراسية حسب التخصص
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onclick="openAddDeptModal()"
+                  class="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
+                >
+                  <span>+ إضافة تخصص جديد</span>
+                </button>
+              </div>
+              <div
+                id="departments-grid-container"
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+              ></div>
+            </div>
+
+            <!-- Central Attendance Database Table -->
+            <div
+              class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden"
+            >
+              <div
+                class="p-6 border-b border-slate-200/90 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-50/50"
+              >
+                <div>
+                  <h3 class="text-lg font-black text-navy-900">
+                    سجل الحضور وقاعدة بيانات الطلاب
+                  </h3>
+                  <p class="text-xs text-slate-400">
+                    استعلام فوري وتحديث مباشر لسجلات الحضور والانضباط السلوكي
+                  </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onclick="openAddStudentModal()"
+                    class="px-4 py-2 bg-navy-900 hover:bg-navy-800 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm"
+                  >
+                    <i class="fa-solid fa-user-plus text-xs"></i>
+                    <span>تسجيل طالب جديد</span>
+                  </button>
+                  <button
+                    type="button"
+                    onclick="exportExcel()"
+                    class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-2xs"
+                  >
+                    <i
+                      class="fa-solid fa-file-excel text-emerald-600 text-xs"
+                    ></i>
+                    <span>تصدير Excel</span>
+                  </button>
+                  <button
+                    type="button"
+                    onclick="exportPDF()"
+                    class="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-2xs"
+                  >
+                    <i class="fa-solid fa-file-pdf text-rose-600 text-xs"></i>
+                    <span>تصدير PDF</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Search and Multi-Level Filters -->
+              <div
+                class="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white"
+              >
+                <div class="relative flex-1 max-w-md">
+                  <i
+                    class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"
+                  ></i>
+                  <input
+                    type="text"
+                    id="admin-search-input"
+                    oninput="handleAdminSearch(this.value)"
+                    placeholder="ابحث باسم الطالب أو الرقم الأكاديمي..."
+                    class="w-full pr-9 pl-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition"
+                  />
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                  <select
+                    id="filter-academic-year"
+                    onchange="applyAdminFilters()"
+                    class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700"
+                  >
+                    <option value="all">كافة السنوات الدراسية</option>
+                    <option value="first">السنة الأولى المشتركة</option>
+                    <option value="second">السنة الثانية التخصصية</option>
+                  </select>
+                  <select
+                    id="filter-department"
+                    onchange="applyAdminFilters()"
+                    class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700"
+                  >
+                    <option value="all">كافة التخصصات والأقسام</option>
+                    <option value="scientific">القسم العلمي والطبيعي</option>
+                    <option value="computer">الحاسب والذكاء الاصطناعي</option>
+                    <option value="business">التجاري وإدارة الأعمال</option>
+                    <option value="languages">اللغات والترجمة</option>
+                  </select>
+                  <select
+                    id="filter-status"
+                    onchange="applyAdminFilters()"
+                    class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700"
+                  >
+                    <option value="all">جميع الحالات اليوم</option>
+                    <option value="present_class">حاضر (في الفصل)</option>
+                    <option value="present_lab">حاضر (في المعمل)</option>
+                    <option value="absent_excused">غائب بعذر</option>
+                    <option value="absent_unexcused">غائب بدون عذر</option>
+                    <option value="late">متأخر</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Data Table -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                  <thead>
+                    <tr
+                      class="bg-slate-50 text-slate-500 text-xs font-bold border-b border-slate-200"
+                    >
+                      <th class="py-3.5 px-5">الطالب والمعلومات الشخصية</th>
+                      <th class="py-3.5 px-4">الرقم الأكاديمي</th>
+                      <th class="py-3.5 px-4">السنة الدراسية والقسم</th>
+                      <th class="py-3.5 px-4 text-center">الانضباط الشهري</th>
+                      <th class="py-3.5 px-4 text-center">
+                        حالة الحضور اليومية
+                      </th>
+                      <th class="py-3.5 px-5 text-center">
+                        الإجراءات والخيارات
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="admin-students-table-body"
+                    class="divide-y divide-slate-100 text-sm"
+                  ></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================================== -->
+          <!-- SCREEN 4: TEACHER PORTAL & TIMETABLE (بوابة المعلم والتحضير)    -->
+          <!-- Exact implementation of WhatsApp Image 2026-11-20 at 9.40.17 PM (1)-->
+          <!-- ============================================================== -->
+          <section
+            id="teacher-portal-view"
+            class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6"
+          >
+            <!-- Teacher Banner -->
+            <div
+              class="bg-gradient-to-l from-navy-900 via-navy-800 to-blue-900 text-white p-6 sm:p-7 rounded-3xl card-shadow relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5"
+            >
+              <div class="relative z-10 flex items-center gap-4">
+                <div class="relative">
+                  <img
+                    id="teacher-view-avatar"
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=faces"
+                    alt="Teacher"
+                    class="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl object-cover border-2 border-white/20 shadow-md"
+                  />
+                  <span
+                    class="absolute -bottom-1 -left-1 bg-emerald-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full border border-navy-900 flex items-center gap-1"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                    <span>متصل الآن</span>
+                  </span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span
+                      id="teacher-view-code"
+                      class="text-[10px] font-bold bg-blue-500/30 text-blue-200 border border-blue-400/30 px-2.5 py-0.5 rounded-md"
+                      >كود المدرب: TC-5510</span
+                    >
+                    <span
+                      id="teacher-view-track"
+                      class="text-[10px] font-bold bg-white/10 text-slate-200 px-2.5 py-0.5 rounded-md"
+                      >المسار التقني والموهوبين</span
+                    >
+                  </div>
+                  <h2
+                    id="teacher-view-name"
+                    class="text-xl sm:text-2xl font-black"
+                  >
+                    أ/ طارق بن سالم الزهراني
+                  </h2>
+                  <p
+                    id="teacher-view-title"
+                    class="text-xs text-blue-100/80 font-medium mt-0.5"
+                  >
+                    مدرس وموجه أول: علوم الحاسب، البرمجيات وهندسة الشبكات
+                    المتقدمة
+                  </p>
+                </div>
+              </div>
+
+              <div class="relative z-10 flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onclick="openAddNoteModal('')"
+                  class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black transition flex items-center gap-2 shadow-md"
+                >
+                  <i class="fa-regular fa-comment-dots"></i>
+                  <span>تدوين ملاحظة وسلوك طالب</span>
+                </button>
+                <button
+                  type="button"
+                  onclick="exportTeacherRecord()"
+                  class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl text-xs font-bold transition flex items-center gap-2 backdrop-blur-xs"
+                >
+                  <i class="fa-solid fa-download"></i>
+                  <span>تصدير السجل</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 4 Teacher KPI Metric Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div
+                class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex items-center justify-between"
+              >
+                <div>
+                  <span class="text-xs font-bold text-slate-400"
+                    >الحصص الأسبوعية</span
+                  >
+                  <div class="text-3xl font-black text-navy-900 mt-1">18</div>
+                  <span class="text-[10px] font-semibold text-emerald-600"
+                    >اكتمال النصاب المقرر 100%</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg shrink-0"
+                >
+                  <i class="fa-regular fa-calendar-check"></i>
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex items-center justify-between"
+              >
+                <div>
+                  <span class="text-xs font-bold text-slate-400"
+                    >الفصول والشعب المسندة</span
+                  >
+                  <div class="text-3xl font-black text-navy-900 mt-1">4</div>
+                  <span class="text-[10px] font-semibold text-slate-500"
+                    >إجمالي: 118 طالباً متدرباً</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg shrink-0"
+                >
+                  <i class="fa-solid fa-users-rectangle"></i>
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex items-center justify-between"
+              >
+                <div>
+                  <span class="text-xs font-bold text-slate-400"
+                    >متوسط نسبة الحضور</span
+                  >
+                  <div class="text-3xl font-black text-navy-900 mt-1">96%</div>
+                  <span class="text-[10px] font-bold text-blue-600">ممتاز</span>
+                </div>
+                <div
+                  class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shrink-0"
+                >
+                  <i class="fa-solid fa-chart-line"></i>
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex items-center justify-between"
+              >
+                <div>
+                  <span class="text-xs font-bold text-slate-400"
+                    >الواجبات والمشاريع المستلمة</span
+                  >
+                  <div class="text-3xl font-black text-navy-900 mt-1">
+                    104
+                    <span class="text-sm font-semibold text-slate-400"
+                      >من أصل 118</span
+                    >
+                  </div>
+                  <span class="text-[10px] font-semibold text-amber-600"
+                    >14 واجب بحاجة للرصد والتقييم</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shrink-0"
+                >
+                  <i class="fa-regular fa-circle-check"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Split Main Content: Live Attendance Tool (Left) + Weekly Timetable Grid (Right) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <!-- Live Tool (Left 4 cols) -->
+              <div
+                class="lg:col-span-4 bg-white rounded-3xl border border-slate-200 card-shadow p-5 flex flex-col justify-between"
+              >
+                <div>
+                  <div class="pb-3 border-b border-slate-100">
+                    <div class="flex items-center justify-between mb-1">
+                      <span
+                        class="text-[11px] font-bold text-blue-600 flex items-center gap-1.5"
+                      >
+                        <span
+                          class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"
+                        ></span>
+                        <span>أداة رصد الحضور اللحظية</span>
+                      </span>
+                      <span
+                        class="text-[11px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md"
+                        >08:50 - 09:35</span
+                      >
+                    </div>
+                    <h4 class="text-base font-black text-navy-900">
+                      الحصة الثانية: فصل 3/أ
+                    </h4>
+                    <p class="text-xs text-slate-400 mt-0.5">
+                      مقرر: بروتوكولات التوجيه IP (قاعة 102)
+                    </p>
+                  </div>
+
+                  <div class="grid grid-cols-3 gap-2 my-3 text-center">
+                    <div
+                      class="bg-emerald-50 border border-emerald-200/80 rounded-xl p-2"
+                    >
+                      <span
+                        id="live-count-present"
+                        class="text-lg font-black text-emerald-600 block"
+                        >27</span
+                      >
+                      <span class="text-[10px] font-bold text-emerald-700"
+                        >حاضر</span
+                      >
+                    </div>
+                    <div
+                      class="bg-amber-50 border border-amber-200/80 rounded-xl p-2"
+                    >
+                      <span
+                        id="live-count-late"
+                        class="text-lg font-black text-amber-600 block"
+                        >2</span
+                      >
+                      <span class="text-[10px] font-bold text-amber-700"
+                        >متأخر</span
+                      >
+                    </div>
+                    <div
+                      class="bg-rose-50 border border-rose-200/80 rounded-xl p-2"
+                    >
+                      <span
+                        id="live-count-absent"
+                        class="text-lg font-black text-rose-600 block"
+                        >1</span
+                      >
+                      <span class="text-[10px] font-bold text-rose-700"
+                        >غائب</span
+                      >
+                    </div>
+                  </div>
+
+                  <div
+                    class="flex items-center justify-between text-xs font-bold text-slate-500 mb-2"
+                  >
+                    <span>سجل طلاب الحصة</span>
+                    <button
+                      type="button"
+                      onclick="setAllTeacherStudents('present')"
+                      class="text-blue-600 hover:underline text-[11px] flex items-center gap-1"
+                    >
+                      <i class="fa-solid fa-check-double"></i>
+                      <span>تحديد الكل كحاضر</span>
+                    </button>
+                  </div>
+                  <div
+                    id="teacher-live-students-list"
+                    class="space-y-2 max-h-[360px] overflow-y-auto pr-1"
+                  ></div>
+
+                  <div class="mt-4 pt-3 border-t border-slate-100">
+                    <label
+                      class="block text-[11px] font-bold text-slate-500 mb-1"
+                    >
+                      <i
+                        class="fa-regular fa-comment-dots text-slate-400 ml-1"
+                      ></i>
+                      ملاحظات المعلم الخاصة بهذه الحصة:
+                    </label>
+                    <textarea
+                      id="teacher-session-note"
+                      rows="2"
+                      class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition"
+                      placeholder="اكتب ملاحظة حول أداء الفصل أو تفاعل الطلاب..."
+                    ></textarea>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onclick="saveTeacherLiveAttendance()"
+                  class="w-full mt-4 py-3 px-4 bg-navy-900 hover:bg-navy-800 text-white rounded-xl text-xs font-black shadow-md shadow-navy-900/15 transition flex items-center justify-center gap-2"
+                >
+                  <i class="fa-solid fa-circle-check"></i>
+                  <span>حفظ واعتماد الحضور اليومي</span>
+                </button>
+              </div>
+
+              <!-- Timetable (Right 8 cols) -->
+              <div
+                class="lg:col-span-8 bg-white rounded-3xl border border-slate-200 card-shadow p-6 flex flex-col justify-between"
+              >
+                <div>
+                  <div
+                    class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3"
+                  >
+                    <div>
+                      <h3 class="text-lg font-black text-navy-900">
+                        الجدول الأسبوعي الموزع
+                      </h3>
+                      <p class="text-xs text-slate-400">
+                        توزيع الفترات النظرية وورش العمل التطبيقية للمقررات
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs font-bold">
+                      <span class="flex items-center gap-1.5"
+                        ><span class="w-3 h-3 rounded-sm bg-blue-600"></span
+                        ><span>نظري (قاعات ذكية)</span></span
+                      >
+                      <span class="flex items-center gap-1.5"
+                        ><span class="w-3 h-3 rounded-sm bg-[#ea580c]"></span
+                        ><span>عملي (معامل السحابة والشبكات)</span></span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="overflow-x-auto pt-4">
+                    <table
+                      class="w-full text-right border-collapse min-w-[650px]"
+                    >
+                      <thead>
+                        <tr
+                          class="bg-slate-50 text-slate-500 text-[11px] font-bold border-b border-slate-200"
+                        >
+                          <th class="py-2.5 px-3 w-20">اليوم</th>
+                          <th class="py-2.5 px-3 text-center">الحصة الأولى</th>
+                          <th class="py-2.5 px-3 text-center">الحصة الثانية</th>
+                          <th class="py-2.5 px-3 text-center">الحصة الثالثة</th>
+                          <th class="py-2.5 px-3 text-center">الحصة الرابعة</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-100 text-xs">
+                        <tr>
+                          <td
+                            class="py-3 px-3 font-black text-navy-900 bg-slate-50/50"
+                          >
+                            الأحد
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="timetable-cell-theory p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold">مقدمة الشبكات</div>
+                              <div class="text-[10px] text-slate-500">
+                                فصل 3/أ - قاعة 102
+                              </div>
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="timetable-cell-theory p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold">هندسة الحواسيب</div>
+                              <div class="text-[10px] text-slate-500">
+                                فصل 2/ب - قاعة 104
+                              </div>
+                            </div>
+                          </td>
+                          <td colspan="2" class="p-2">
+                            <div
+                              class="timetable-cell-practical p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold text-[#9a3412]">
+                                معمل محاكاة الشبكات (معمل 4C)
+                              </div>
+                              <div class="text-[10px] text-[#c2410c]">
+                                ربط أجهزة التوجيه والتشفير السحابي
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            class="py-3 px-3 font-black text-navy-900 bg-slate-50/50"
+                          >
+                            الإثنين
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="bg-slate-100 p-2.5 rounded-xl text-center text-slate-400"
+                            >
+                              تخطيط وتنسيق
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="timetable-cell-theory p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold">برمجة Python</div>
+                              <div class="text-[10px] text-slate-500">
+                                فصل 1/ج - قاعة 201
+                              </div>
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="timetable-cell-theory p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold">أمن المعلومات</div>
+                              <div class="text-[10px] text-slate-500">
+                                فصل 3/ب - قاعة 105
+                              </div>
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="timetable-cell-practical p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold text-[#9a3412]">
+                                ورشة صيانة الحواسيب
+                              </div>
+                              <div class="text-[10px] text-[#c2410c]">
+                                ورشة العتاد B2
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="bg-blue-50/30">
+                          <td
+                            class="py-3 px-3 font-black text-blue-700 bg-blue-100/50"
+                          >
+                            الثلاثاء (اليوم)
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="bg-slate-100 p-2.5 rounded-xl text-center text-slate-500"
+                            >
+                              <div class="font-bold">علوم البيانات</div>
+                              <div class="text-[10px] text-slate-400">
+                                منتهية
+                              </div>
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="bg-navy-900 text-white p-2.5 rounded-xl text-center shadow-md border-2 border-blue-400"
+                            >
+                              <div
+                                class="text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded font-bold"
+                              >
+                                الحصة الحالية
+                              </div>
+                              <div class="font-black mt-1">
+                                بروتوكولات التوجيه IP
+                              </div>
+                            </div>
+                          </td>
+                          <td colspan="2" class="p-2">
+                            <div
+                              class="timetable-cell-practical p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold text-[#9a3412]">
+                                تطبيق خوادم Linux (معمل 4C)
+                              </div>
+                              <div class="text-[10px] text-[#c2410c]">
+                                خدمات الويب وقواعد البيانات
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            class="py-3 px-3 font-black text-navy-900 bg-slate-50/50"
+                          >
+                            الأربعاء
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="timetable-cell-theory p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold">الذكاء الاصطناعي</div>
+                              <div class="text-[10px] text-slate-500">
+                                قاعة 105
+                              </div>
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="timetable-cell-theory p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold">برمجة الويب</div>
+                              <div class="text-[10px] text-slate-500">
+                                قاعة 201
+                              </div>
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="bg-slate-100 p-2.5 rounded-xl text-center text-slate-400"
+                            >
+                              تطوير مهني
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="timetable-cell-practical p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold text-[#9a3412]">
+                                مختبر البرمجة التطبيقية
+                              </div>
+                              <div class="text-[10px] text-[#c2410c]">
+                                معمل 2A
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            class="py-3 px-3 font-black text-navy-900 bg-slate-50/50"
+                          >
+                            الخميس
+                          </td>
+                          <td colspan="2" class="p-2">
+                            <div
+                              class="timetable-cell-practical p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold text-[#9a3412]">
+                                هاكاثون التطبيقات المدرسية
+                              </div>
+                              <div class="text-[10px] text-[#c2410c]">
+                                قاعة الابتكار
+                              </div>
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="timetable-cell-theory p-2.5 rounded-xl text-center"
+                            >
+                              <div class="font-bold">أخلاقيات التقنية</div>
+                              <div class="text-[10px] text-slate-500">
+                                قاعة 104
+                              </div>
+                            </div>
+                          </td>
+                          <td class="p-2">
+                            <div
+                              class="bg-slate-100 p-2.5 rounded-xl text-center text-slate-400"
+                            >
+                              ساعات مكتبية
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================================== -->
+          <!-- SCREEN 5: STUDENT PORTAL & HEATMAP (بوابة وجدول الطالب)         -->
+          <!-- Exact implementation of WhatsApp Image 2026-11-20 at 9.40.17 PM-->
+          <!-- ============================================================== -->
+          <section
+            id="student-portal-view"
+            class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6"
+          >
+            <!-- Profile Header -->
+            <div
+              class="bg-white p-6 rounded-3xl border border-slate-200 card-shadow flex flex-col md:flex-row md:items-center justify-between gap-4"
+            >
+              <div class="flex items-center gap-4">
+                <div class="relative">
+                  <img
+                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces"
+                    alt="Student"
+                    class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-2xs"
+                  />
+                  <span
+                    class="absolute -bottom-1 -left-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white"
+                  ></span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span
+                      class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-md"
+                      >طالب منتظم</span
+                    >
+                    <span class="text-xs text-slate-400 font-mono"
+                      >كود الطالب: STD-2024-884</span
+                    >
+                  </div>
+                  <h2 class="text-xl sm:text-2xl font-black text-navy-900">
+                    الطالب / أحمد محمود الشريف
+                  </h2>
+                  <div
+                    class="flex flex-wrap items-center gap-3 mt-1 text-xs text-slate-500 font-semibold"
+                  >
+                    <span>المستوى الثاني ثانوي - الشعبة (أ)</span>
+                    <span>•</span>
+                    <span
+                      >المعدل التراكمي:
+                      <strong class="text-navy-900 font-mono text-sm"
+                        >4.88 / 5.00</strong
+                      ></span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2">
+                <span
+                  class="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold"
+                  >السنة الأولى</span
+                >
+                <span
+                  class="bg-navy-900 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold"
+                  >السنة الثانية</span
+                >
+                <span
+                  class="bg-blue-600 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold"
+                  >علوم تطبيقية</span
+                >
+                <span
+                  class="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold"
+                  >حاسب وتقنية معلومات</span
+                >
+              </div>
+            </div>
+
+            <!-- Weekly Timetable -->
+            <div
+              class="bg-white rounded-3xl border border-slate-200 card-shadow p-6"
+            >
+              <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3"
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg"
+                  >
+                    <i class="fa-regular fa-calendar-days"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-black text-navy-900">
+                      الجدول الدراسي الأسبوعي
+                    </h3>
+                    <p class="text-xs text-slate-400">
+                      متابعة مواعيد الحصص المباشرة، المعامل العلمية، وقاعات
+                      التدريس
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onclick="exportPDF()"
+                  class="text-blue-600 hover:underline font-bold text-xs flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-download text-xs"></i>
+                  <span>تحميل الجدول PDF</span>
+                </button>
+              </div>
+
+              <!-- 5 Days Timetable Cards -->
+              <div
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 pt-4"
+              >
+                <!-- Sunday -->
+                <div class="space-y-3">
+                  <div
+                    class="bg-blue-50 text-blue-900 p-2.5 rounded-xl text-center font-black text-xs"
+                  >
+                    الأحد
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      08:00 - 09:15 ص • قاعة 204
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      فيزياء عامة (1)
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      د. سامح الهواري
+                    </div>
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      09:30 - 10:45 ص • قاعة 108
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      رياضيات متقدمة
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      أ. عادل النجار
+                    </div>
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      11:15 - 12:30 م • مدرج أ
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      مبادئ البرمجة
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      د. هاني البدر
+                    </div>
+                  </div>
+                </div>
+                <!-- Monday -->
+                <div class="space-y-3">
+                  <div
+                    class="bg-blue-50 text-blue-900 p-2.5 rounded-xl text-center font-black text-xs"
+                  >
+                    الإثنين
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      08:00 - 09:15 ص • قاعة 201
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      كيمياء عضوية
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      د. منى عبد الرزاق
+                    </div>
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      09:30 - 10:45 ص • مدرج ج
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      لغة إنجليزية أكاديمية
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      أ. جوناثان كين
+                    </div>
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      11:15 - 12:30 م • قاعة 115
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      تطبيقات الذكاء الاصطناعي
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      د. كمال منصور
+                    </div>
+                  </div>
+                </div>
+                <!-- Tuesday -->
+                <div class="space-y-3">
+                  <div
+                    class="bg-blue-50 text-blue-900 p-2.5 rounded-xl text-center font-black text-xs"
+                  >
+                    الثلاثاء
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      08:00 - 09:15 ص • قاعة 204
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      فيزياء عامة (1)
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      د. سامح الهواري
+                    </div>
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      09:30 - 10:45 ص • قاعة 108
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      رياضيات متقدمة
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      أ. عادل النجار
+                    </div>
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      12:30 - 01:45 م • قاعة 312
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      علم البيئة والاستدامة
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      أ. خديجة المهيدب
+                    </div>
+                  </div>
+                </div>
+                <!-- Wednesday -->
+                <div class="space-y-3">
+                  <div
+                    class="bg-blue-50 text-blue-900 p-2.5 rounded-xl text-center font-black text-xs"
+                  >
+                    الأربعاء
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      08:00 - 09:15 ص • قاعة 201
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      كيمياء عضوية
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      د. منى عبد الرزاق
+                    </div>
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      10:00 - 11:15 ص • قاعة 115
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      تطبيقات الذكاء الاصطناعي
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      د. كمال منصور
+                    </div>
+                  </div>
+                </div>
+                <!-- Thursday -->
+                <div class="space-y-3">
+                  <div
+                    class="bg-blue-50 text-blue-900 p-2.5 rounded-xl text-center font-black text-xs"
+                  >
+                    الخميس
+                  </div>
+                  <div class="timetable-cell-theory p-3 rounded-2xl">
+                    <div class="text-[10px] text-blue-700 font-bold mb-1">
+                      08:00 - 09:15 ص • مدرج أ
+                    </div>
+                    <div class="font-black text-navy-900 text-xs">
+                      مبادئ البرمجة
+                    </div>
+                    <div class="text-[10px] text-slate-500 mt-1">
+                      د. هاني البدر
+                    </div>
+                  </div>
+                  <div class="timetable-cell-practical p-3 rounded-2xl">
+                    <div class="text-[10px] text-[#c2410c] font-bold mb-1">
+                      11:15 - 12:30 م • ورشة 1
+                    </div>
+                    <div class="font-black text-[#9a3412] text-xs">
+                      التصميم الهندسي
+                    </div>
+                    <div class="text-[10px] text-[#c2410c] mt-1">
+                      أ. طارق الزهراني
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Monthly Attendance Record & Visual Heatmap -->
+            <div
+              class="bg-white rounded-3xl border border-slate-200 card-shadow p-6 space-y-6"
+            >
+              <div
+                class="flex items-center justify-between pb-4 border-b border-slate-100"
+              >
+                <div>
+                  <h3 class="text-lg font-black text-navy-900">
+                    سجل الحضور والغياب على مدار الشهر
+                  </h3>
+                  <p class="text-xs text-slate-400">
+                    تقرير شهر شعبان 1446هـ / فبراير 2026م المعتمد رسمياً
+                  </p>
+                </div>
+                <span
+                  class="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-xl"
+                  >فبراير 2026</span
+                >
+              </div>
+
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div
+                  class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between"
+                >
+                  <div>
+                    <span class="text-xs font-bold text-slate-500"
+                      >نسبة الحضور</span
+                    >
+                    <div class="text-2xl font-black text-navy-900 mt-1">
+                      94%
+                    </div>
+                    <span class="text-[10px] text-blue-600 font-bold"
+                      >معدل ممتاز</span
+                    >
+                  </div>
+                  <div
+                    class="w-10 h-10 rounded-2xl bg-white border border-slate-200 text-blue-600 flex items-center justify-center font-bold"
+                  >
+                    <i class="fa-solid fa-chart-pie"></i>
+                  </div>
+                </div>
+                <div
+                  class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-200 flex items-center justify-between"
+                >
+                  <div>
+                    <span class="text-xs font-bold text-emerald-800"
+                      >أيام الحضور الفعلي</span
+                    >
+                    <div class="text-2xl font-black text-emerald-600 mt-1">
+                      22
+                      <span class="text-xs font-semibold text-emerald-700"
+                        >يوم</span
+                      >
+                    </div>
+                    <span class="text-[10px] text-emerald-700"
+                      >من أصل 24 يوماً</span
+                    >
+                  </div>
+                  <div
+                    class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center"
+                  >
+                    <i class="fa-regular fa-circle-check"></i>
+                  </div>
+                </div>
+                <div
+                  class="bg-amber-50/50 p-4 rounded-2xl border border-amber-200 flex items-center justify-between"
+                >
+                  <div>
+                    <span class="text-xs font-bold text-amber-800"
+                      >أيام الغياب الموثقة</span
+                    >
+                    <div class="text-2xl font-black text-amber-600 mt-1">
+                      2
+                      <span class="text-xs font-semibold text-amber-700"
+                        >يوم</span
+                      >
+                    </div>
+                    <span class="text-[10px] text-amber-700"
+                      >بعذر طبي معتمد</span
+                    >
+                  </div>
+                  <div
+                    class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center"
+                  >
+                    <i class="fa-solid fa-notes-medical"></i>
+                  </div>
+                </div>
+                <div
+                  class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between"
+                >
+                  <div>
+                    <span class="text-xs font-bold text-slate-500"
+                      >التأخير الصباحي</span
+                    >
+                    <div class="text-2xl font-black text-navy-900 mt-1">
+                      0
+                      <span class="text-xs font-semibold text-slate-400"
+                        >يوم</span
+                      >
+                    </div>
+                    <span class="text-[10px] text-emerald-600 font-bold"
+                      >انضباط مثالي</span
+                    >
+                  </div>
+                  <div
+                    class="w-10 h-10 rounded-2xl bg-white border border-slate-200 text-slate-600 flex items-center justify-center"
+                  >
+                    <i class="fa-regular fa-clock"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-2">
+                <div class="flex items-center justify-between mb-3">
+                  <h4
+                    class="font-black text-navy-900 text-sm flex items-center gap-2"
+                  >
+                    <i class="fa-solid fa-border-all text-blue-600"></i>
+                    <span>الخريطة البصرية لأيام الشهر</span>
+                  </h4>
+                  <div
+                    class="flex items-center gap-3 text-xs font-semibold text-slate-600"
+                  >
+                    <span class="flex items-center gap-1"
+                      ><span
+                        class="w-2.5 h-2.5 rounded-full bg-emerald-500"
+                      ></span
+                      ><span>حضور</span></span
+                    >
+                    <span class="flex items-center gap-1"
+                      ><span
+                        class="w-2.5 h-2.5 rounded-full bg-amber-500"
+                      ></span
+                      ><span>عذر</span></span
+                    >
+                    <span class="flex items-center gap-1"
+                      ><span
+                        class="w-2.5 h-2.5 rounded-full bg-slate-300"
+                      ></span
+                      ><span>عطلة</span></span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-slate-400 pb-2 border-b border-slate-100"
+                >
+                  <div>الأحد</div>
+                  <div>الإثنين</div>
+                  <div>الثلاثاء</div>
+                  <div>الأربعاء</div>
+                  <div>الخميس</div>
+                  <div>الجمعة</div>
+                  <div>السبت</div>
+                </div>
+                <div
+                  id="student-calendar-grid"
+                  class="grid grid-cols-7 gap-2 pt-2"
+                ></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================================== -->
+          <!-- SCREEN 6: PARENT PORTAL (بوابة ولي الأمر ومتابعة الأبناء)       -->
+          <!-- Complete with Attendance, Absence, Behavior, & Excuse Submissions-->
+          <!-- ============================================================== -->
+          <section
+            id="parent-portal-view"
+            class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6"
+          >
+            <!-- Parent Welcome & Child Selector -->
+            <div
+              class="bg-gradient-to-l from-navy-900 via-navy-800 to-emerald-900 text-white p-6 sm:p-7 rounded-3xl card-shadow relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5"
+            >
+              <div class="relative z-10">
+                <div
+                  class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-300 text-xs font-bold mb-2"
+                >
+                  <i class="fa-solid fa-shield-heart"></i>
+                  <span>بوابة ولي الأمر المعتمدة</span>
+                </div>
+                <h2
+                  id="parent-view-name"
+                  class="text-xl sm:text-2xl font-black"
+                >
+                  أهلاً بك يا أبا أحمد 👋
+                </h2>
+                <p class="text-xs sm:text-sm text-emerald-100/80 mt-1">
+                  تابع الحضور والغياب والملاحظات المدرسية المباشرة لأبنائك لحظة
+                  بلحظة.
+                </p>
+              </div>
+
+              <div class="relative z-10 flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onclick="openExcuseModal()"
+                  class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black transition flex items-center gap-2 shadow-md"
+                >
+                  <i class="fa-solid fa-file-signature"></i>
+                  <span>تقديم عذر غياب جديد</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Multi-Child Selector Card -->
+            <div
+              class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-black text-sm"
+                >
+                  أ.ش
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-black text-navy-900 text-base">
+                      أحمد محمود الشريف
+                    </h3>
+                    <span
+                      class="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md border border-blue-200"
+                      >STD-2024-884</span
+                    >
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">
+                    الصف الثاني الثانوي (أ) • مسار علوم تطبيقية وحاسب
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-400"
+                  >المعلم المشرف:</span
+                >
+                <span
+                  class="text-xs font-black text-navy-900 bg-slate-50 border border-slate-200 px-3 py-1 rounded-xl"
+                  >أ/ طارق الزهراني</span
+                >
+              </div>
+            </div>
+
+            <!-- Summary Counters for the Child -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div
+                class="bg-white p-5 rounded-3xl border border-emerald-200 card-shadow flex items-center justify-between bg-emerald-50/20"
+              >
+                <div>
+                  <span class="text-xs font-bold text-emerald-800"
+                    >أيام الحضور المكتمل</span
+                  >
+                  <div class="text-3xl font-black text-emerald-600 mt-1">
+                    22 <span class="text-xs font-semibold">يوم</span>
+                  </div>
+                  <span class="text-[11px] text-emerald-700"
+                    >مواظبة تامة بنسبة 94%</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl"
+                >
+                  <i class="fa-solid fa-circle-check"></i>
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-5 rounded-3xl border border-amber-200 card-shadow flex items-center justify-between bg-amber-50/20"
+              >
+                <div>
+                  <span class="text-xs font-bold text-amber-800"
+                    >أيام الغياب</span
+                  >
+                  <div class="text-3xl font-black text-amber-600 mt-1">
+                    2 <span class="text-xs font-semibold">يوم</span>
+                  </div>
+                  <span class="text-[11px] text-amber-700"
+                    >موثقة بأعذار طبية معتمدة</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl"
+                >
+                  <i class="fa-solid fa-file-medical"></i>
+                </div>
+              </div>
+
+              <div
+                class="bg-white p-5 rounded-3xl border border-blue-200 card-shadow flex items-center justify-between bg-blue-50/20"
+              >
+                <div>
+                  <span class="text-xs font-bold text-blue-800"
+                    >مرات التأخير</span
+                  >
+                  <div class="text-3xl font-black text-blue-600 mt-1">
+                    0 <span class="text-xs font-semibold">مرات</span>
+                  </div>
+                  <span class="text-[11px] text-blue-700"
+                    >حضور منتظم قبل الطابور</span
+                  >
+                </div>
+                <div
+                  class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl"
+                >
+                  <i class="fa-regular fa-clock"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dual Section: Behavior Notes Feed (Right) + Excuses & Days Log (Left) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <!-- Right Column: Teacher Notes & Behavior Logs (6 Cols) -->
+              <div class="lg:col-span-6 space-y-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3
+                      class="text-base font-black text-navy-900 flex items-center gap-2"
+                    >
+                      <i class="fa-solid fa-comments text-blue-600"></i>
+                      <span>صندوق ملاحظات وسلوكيات المعلمين</span>
+                    </h3>
+                    <p class="text-xs text-slate-400">
+                      تقارير التميز الأكاديمي والتوجيهات السلوكية المباشرة من
+                      الكادر التعليمي
+                    </p>
+                  </div>
+                </div>
+
+                <div id="parent-behavior-notes-list" class="space-y-3">
+                  <!-- Populated dynamically by JS -->
+                </div>
+              </div>
+
+              <!-- Left Column: Excuses Tracker & Action (6 Cols) -->
+              <div class="lg:col-span-6 space-y-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3
+                      class="text-base font-black text-navy-900 flex items-center gap-2"
+                    >
+                      <i class="fa-solid fa-file-medical text-emerald-600"></i>
+                      <span>أعذار الغياب المرفوعة للمدرسة</span>
+                    </h3>
+                    <p class="text-xs text-slate-400">
+                      متابعة حالة اعتماد الأعذار الرسمية المرفوعة لإدارة المدرسة
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onclick="openExcuseModal()"
+                    class="text-xs font-bold text-emerald-600 hover:underline"
+                  >
+                    + إضافة عذر
+                  </button>
+                </div>
+
+                <div id="parent-excuses-list" class="space-y-3">
+                  <!-- Populated dynamically by JS -->
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL 1: ADD NEW STUDENT (إضافة طالب جديد)                    -->
+    <!-- ============================================================== -->
+    <div
+      id="modal-add-student"
+      class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200"
+      >
+        <div
+          class="flex items-center justify-between pb-4 border-b border-slate-100"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center"
+            >
+              <i class="fa-solid fa-user-plus text-base"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-navy-900 text-lg">تسجيل طالب جديد</h3>
+              <p class="text-xs text-slate-400">
+                إضافة بيانات الطالب وتعيين القسم والشعبة
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onclick="closeAddStudentModal()"
+            class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <form
+          id="form-add-student"
+          onsubmit="handleAddNewStudent(event)"
+          class="space-y-4 pt-4"
+        >
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >الاسم الرباعي للطالب <span class="text-rose-500">*</span></label
+            >
+            <input
+              type="text"
+              id="new-name"
+              required
+              placeholder="مثال: ريان عبد الإله الشريف"
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1"
+                >السنة الدراسية <span class="text-rose-500">*</span></label
+              >
+              <select
+                id="new-grade"
+                required
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700"
+              >
+                <option value="السنة الأولى المشتركة">
+                  السنة الأولى المشتركة
+                </option>
+                <option value="السنة الثانية التخصصية">
+                  السنة الثانية التخصصية
+                </option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1"
+                >القسم والتخصص <span class="text-rose-500">*</span></label
+              >
+              <select
+                id="new-department"
+                required
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700"
+              >
+                <option value="القسم العلمي والطبيعي">
+                  القسم العلمي والطبيعي
+                </option>
+                <option value="قسم الحاسب والذكاء الاصطناعي">
+                  قسم الحاسب والذكاء الاصطناعي
+                </option>
+                <option value="القسم التجاري وإدارة الأعمال">
+                  القسم التجاري وإدارة الأعمال
+                </option>
+                <option value="قسم اللغات والدراسات الدولية">
+                  قسم اللغات والدراسات الدولية
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1"
+                >اسم ولي الأمر</label
+              >
+              <input
+                type="text"
+                id="new-parent-name"
+                placeholder="مثال: عبد الإله الشريف"
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1"
+                >رقم جوال ولي الأمر <span class="text-rose-500">*</span></label
+              >
+              <input
+                type="tel"
+                id="new-parent-phone"
+                required
+                placeholder="05XXXXXXXX"
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-semibold"
+              />
+            </div>
+          </div>
+
+          <div
+            class="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100"
+          >
+            <button
+              type="button"
+              onclick="closeAddStudentModal()"
+              class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+            >
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold shadow-md shadow-navy-900/15 transition flex items-center gap-2"
+            >
+              <i class="fa-solid fa-check"></i>
+              <span>إضافة الطالب الآن</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL 2: ADD NEW DEPARTMENT (إضافة قسم وتخصص جديد من الإدارة)  -->
+    <!-- ============================================================== -->
+    <div
+      id="modal-add-dept"
+      class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200"
+      >
+        <div
+          class="flex items-center justify-between pb-4 border-b border-slate-100"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center"
+            >
+              <i class="fa-solid fa-folder-plus text-base"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-navy-900 text-lg">
+                إضافة قسم وتخصص دراسي جديد
+              </h3>
+              <p class="text-xs text-slate-400">
+                توسيع الأقسام الأكاديمية والمعامل التخصصية
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onclick="closeAddDeptModal()"
+            class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <form
+          id="form-add-dept"
+          onsubmit="handleAddNewDepartment(event)"
+          class="space-y-4 pt-4"
+        >
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >اسم القسم الأكاديمي <span class="text-rose-500">*</span></label
+            >
+            <input
+              type="text"
+              id="dept-name"
+              required
+              placeholder="مثال: قسم الروبوتات والذكاء الاصطناعي المتقدم"
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1"
+                >الكود التعريفي <span class="text-rose-500">*</span></label
+              >
+              <input
+                type="text"
+                id="dept-code"
+                required
+                placeholder="مثال: ROB-05"
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-semibold"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1"
+                >أيقونة القسم</label
+              >
+              <select
+                id="dept-icon"
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700"
+              >
+                <option value="fa-robot">🤖 روبوتات وذكاء اصطناعي</option>
+                <option value="fa-dna">🧬 هندسة وراثية وطبية</option>
+                <option value="fa-solar-panel">⚡ طاقة متجددة وبيئة</option>
+                <option value="fa-satellite">🛰️ علوم الفضاء والفلك</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1"
+                >طاقة الطلاب الاستيعابية</label
+              >
+              <input
+                type="number"
+                id="dept-students"
+                value="180"
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-semibold"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1"
+                >عدد أعضاء هيئة التدريس</label
+              >
+              <input
+                type="number"
+                id="dept-teachers"
+                value="8"
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-semibold"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >وصف المقررات والمناهج</label
+            >
+            <textarea
+              id="dept-desc"
+              rows="2"
+              class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition"
+              placeholder="البرمجة المتقدمة، التحكم الآلي، والأنظمة المدمجة..."
+            ></textarea>
+          </div>
+
+          <div
+            class="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100"
+          >
+            <button
+              type="button"
+              onclick="closeAddDeptModal()"
+              class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+            >
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-600/20 transition flex items-center gap-2"
+            >
+              <i class="fa-solid fa-check"></i>
+              <span>حفظ واعتماد القسم</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL 3: ADD BEHAVIOR NOTE (تدوين ملاحظة وسلوك طالب من المعلم) -->
+    <!-- ============================================================== -->
+    <div
+      id="modal-add-note"
+      class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200"
+      >
+        <div
+          class="flex items-center justify-between pb-4 border-b border-slate-100"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center"
+            >
+              <i class="fa-regular fa-comment-dots text-base"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-navy-900 text-lg">
+                تدوين ملاحظة وسلوك طالب
+              </h3>
+              <p class="text-xs text-slate-400">
+                إرسال تقرير فوري للطالب وولي أمره عبر المنصة
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onclick="closeAddNoteModal()"
+            class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <form
+          id="form-add-note"
+          onsubmit="handleAddNewBehaviorNote(event)"
+          class="space-y-4 pt-4"
+        >
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >اختر الطالب <span class="text-rose-500">*</span></label
+            >
+            <select
+              id="note-student-select"
+              required
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800"
+            >
+              <!-- Populated by JS -->
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >تصنيف الملاحظة <span class="text-rose-500">*</span></label
+            >
+            <select
+              id="note-type-select"
+              required
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800"
+            >
+              <option value="positive">
+                🌟 إيجابي وتفوق أكاديمي (تعزيز ومدح)
+              </option>
+              <option value="academic">📚 متابعة دراسية وواجبات</option>
+              <option value="warning">⚠️ تنبيه سلوكي وانضباطي</option>
+              <option value="appreciation">🎖️ شكر وتقدير لموقف متميز</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >عنوان الملاحظة <span class="text-rose-500">*</span></label
+            >
+            <input
+              type="text"
+              id="note-title-input"
+              required
+              placeholder="مثال: تفاعل متميز في تطبيق خوادم Linux اليوم"
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >تفاصيل الملاحظة والتوجيه
+              <span class="text-rose-500">*</span></label
+            >
+            <textarea
+              id="note-content-input"
+              rows="3"
+              required
+              placeholder="اكتب التوجيه أو الإشادة هنا... سيصل إشعار فوري لولي الأمر عبر المنصة"
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition"
+            ></textarea>
+          </div>
+
+          <div
+            class="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100"
+          >
+            <button
+              type="button"
+              onclick="closeAddNoteModal()"
+              class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+            >
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold shadow-md shadow-navy-900/15 transition flex items-center gap-2"
+            >
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>إرسال التقرير لولي الأمر</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODAL 4: SUBMIT ABSENCE EXCUSE (تقديم عذر غياب من ولي الأمر)    -->
+    <!-- ============================================================== -->
+    <div
+      id="modal-submit-excuse"
+      class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200"
+      >
+        <div
+          class="flex items-center justify-between pb-4 border-b border-slate-100"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center"
+            >
+              <i class="fa-solid fa-file-signature text-base"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-navy-900 text-lg">
+                تقديم عذر غياب رسمي
+              </h3>
+              <p class="text-xs text-slate-400">
+                رفع العذر لإدارة مدرسة الرواد للاعتماد الرسمي
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onclick="closeExcuseModal()"
+            class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <form
+          id="form-submit-excuse"
+          onsubmit="handleParentSubmitExcuse(event)"
+          class="space-y-4 pt-4"
+        >
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >تاريخ يوم الغياب <span class="text-rose-500">*</span></label
+            >
+            <input
+              type="date"
+              id="excuse-date-input"
+              required
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-800"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >نوع العذر <span class="text-rose-500">*</span></label
+            >
+            <select
+              id="excuse-type-select"
+              required
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800"
+            >
+              <option value="عذر مرضي ومراجعة مستشفى">
+                عذر مرضي ومراجعة مستشفى أو عيادة
+              </option>
+              <option value="ظرف عائلي قاهر">ظرف عائلي قاهر</option>
+              <option value="موعد رسمي / معاملة حكومية">
+                موعد رسمي / معاملة حكومية
+              </option>
+              <option value="أخرى">أسباب أخرى</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1"
+              >تفاصيل العذر <span class="text-rose-500">*</span></label
+            >
+            <textarea
+              id="excuse-detail-input"
+              rows="3"
+              required
+              placeholder="يرجى كتابة سبب الغياب وتوضيح التقرير الطبي أو الإشعار..."
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-emerald-600 transition"
+            ></textarea>
+          </div>
+
+          <div
+            class="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100"
+          >
+            <button
+              type="button"
+              onclick="closeExcuseModal()"
+              class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+            >
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/20 transition flex items-center gap-2"
+            >
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>إرسال العذر للمدرسة</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="no-print"></div>
+
+    <!-- Application Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
