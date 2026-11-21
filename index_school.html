@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجمع الكمال لتكنولوجيا العلوم والبترول | مدارس الكمال ترند لينك الصناعية</title>
+    
+    <!-- Google Fonts: Cairo & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Pro CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN with Custom Extended Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#f0f4fa',
+                            100: '#dce5f3',
+                            200: '#bccde8',
+                            700: '#1b356d',
+                            800: '#132247',
+                            900: '#0b1a3d',
+                            950: '#071026'
+                        },
+                        brand: {
+                            blue: '#1d68ff',
+                            dark: '#002b66',
+                            sky: '#0ea5e9',
+                            petro: '#c27803'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'Tajawal', 'sans-serif'],
+                        latin: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-[#f4f7fb] text-slate-800 min-h-screen flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+
+    <!-- Global App Top Bar (Visible when user is authenticated) -->
+    <header id="global-auth-header" class="hidden sticky top-0 z-40 glass-header border-b border-slate-200/90 shadow-2xs no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-2 flex items-center justify-between gap-4">
+            <!-- Brand Emblem & Title -->
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="navigateTo('portal-hub-view')" class="w-12 h-12 rounded-2xl bg-white border border-slate-200 p-1 flex items-center justify-center shadow-xs hover:scale-105 transition-transform" title="مجمع الكمال لتكنولوجيا العلوم والبترول">
+                    <img src="assets/logo.jpg" alt="شعار مجمع الكمال" class="w-full h-full object-contain">
+                </button>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-black text-navy-900 text-base sm:text-lg tracking-tight">مجمع الكمال لتكنولوجيا العلوم والبترول</span>
+                        <span class="text-[10px] font-bold bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200 hidden sm:inline-block">ترند لينك الصناعية</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 font-medium">المنظومة الرقمية الموحدة • نظام التعليم الفني والتدريب التطبيقي المتقدم</p>
+                </div>
+            </div>
+
+            <!-- Logged-in User Profile & Role Switcher -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2.5 bg-slate-50 border border-slate-200/80 px-3 py-1.5 rounded-2xl shadow-2xs">
+                    <div id="header-user-avatar-box" class="w-9 h-9 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-black text-xs shrink-0 overflow-hidden">
+                        <!-- Filled by JS -->
+                    </div>
+                    <div class="text-right">
+                        <div id="header-user-name" class="font-black text-xs text-navy-900 leading-tight">المستخدم الحالي</div>
+                        <div id="header-user-id" class="text-[10px] text-blue-600 font-mono font-bold">ID: ---</div>
+                    </div>
+                    <span id="header-user-role-badge" class="mr-1 text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
+                        الدور
+                    </span>
+                </div>
+
+                <!-- Switch Role / Logout Button -->
+                <button type="button" onclick="handleLogout()" class="px-3.5 py-2 rounded-xl border border-rose-200 hover:bg-rose-50 text-rose-600 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs" title="تسجيل الخروج وتبديل الحساب">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+                    <span class="hidden sm:inline">تسجيل خروج</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Wrapper with Persistent Sidebar Layout -->
+    <div class="flex-1 flex min-h-screen overflow-x-hidden">
+
+        <!-- ============================================================== -->
+        <!-- FIXED RIGHT SIDEBAR (قائمة التنقل الجانبية الموحدة)             -->
+        <!-- ============================================================== -->
+        <aside id="main-sidebar" class="app-sidebar hidden lg:flex flex-col justify-between py-5 px-2 bg-white border-l border-slate-200 shadow-xs select-none no-print">
+            
+            <!-- Top Logo & Navigation Elements -->
+            <div class="flex flex-col items-center gap-5">
+                <!-- School Emblem / Shield -->
+                <div class="flex flex-col items-center">
+                    <button type="button" onclick="navigateTo('portal-hub-view')" class="w-12 h-12 rounded-2xl bg-white border border-slate-200 p-1 flex items-center justify-center shadow-xs hover:rotate-2 transition-transform" title="مجمع الكمال للبترول">
+                        <img src="assets/logo.jpg" alt="Logo" class="w-full h-full object-contain">
+                    </button>
+                </div>
+
+                <!-- Vertical Navigation Buttons -->
+                <nav class="w-full flex flex-col gap-1.5">
+                    <!-- Nav 1: Admin Dashboard -->
+                    <button type="button" 
+                        id="nav-btn-admin" 
+                        onclick="navigateTo('admin-dashboard-view')"
+                        class="sidebar-nav-btn active w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1" 
+                        title="لوحة الإدارة والأقسام">
+                        <i class="fa-solid fa-shield-halved text-sm"></i>
+                        <span class="text-[9px] font-bold">الإدارة العامة</span>
+                    </button>
+
+                    <!-- Nav 2: Teacher/Trainer Portal -->
+                    <button type="button" 
+                        id="nav-btn-teacher" 
+                        onclick="navigateTo('teacher-portal-view')"
+                        class="sidebar-nav-btn w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1 text-slate-500" 
+                        title="بوابة المدربين ورصد الورش والدرجات">
+                        <i class="fa-solid fa-chalkboard-user text-sm"></i>
+                        <span class="text-[9px] font-bold">بوابة المدرب</span>
+                    </button>
+
+                    <!-- Nav 3: Student Portal -->
+                    <button type="button" 
+                        id="nav-btn-student" 
+                        onclick="navigateTo('student-portal-view')"
+                        class="sidebar-nav-btn w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1 text-slate-500" 
+                        title="لوحة تحكم الطالب والدرجات">
+                        <i class="fa-solid fa-book-open-reader text-sm"></i>
+                        <span class="text-[9px] font-bold">لوحة الطالب</span>
+                    </button>
+
+                    <!-- Nav 4: Dedicated Departments & Majors Page (طلب الصورة رقم 3) -->
+                    <button type="button" 
+                        id="nav-btn-departments" 
+                        onclick="navigateTo('departments-view')"
+                        class="sidebar-nav-btn w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1 text-slate-500" 
+                        title="صفحة الأقسام والتخصصات والمواد والمشرفين">
+                        <i class="fa-solid fa-boxes-stacked text-sm"></i>
+                        <span class="text-[9px] font-bold">الأقسام المهنية</span>
+                    </button>
+
+                    <!-- Nav 5: Parent Portal -->
+                    <button type="button" 
+                        id="nav-btn-parent" 
+                        onclick="navigateTo('parent-portal-view')"
+                        class="sidebar-nav-btn w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1 text-slate-500" 
+                        title="بوابة ولي الأمر ومتابعة الأبناء">
+                        <i class="fa-solid fa-house-user text-sm"></i>
+                        <span class="text-[9px] font-bold">ولي الأمر</span>
+                    </button>
+
+                    <!-- Nav 6: Portal Selection Hub -->
+                    <button type="button" 
+                        id="nav-btn-portals" 
+                        onclick="navigateTo('portal-hub-view')"
+                        class="sidebar-nav-btn w-full py-2.5 px-2 flex flex-col items-center justify-center text-center gap-1 text-slate-500" 
+                        title="المنصة التعريفية الموحدة">
+                        <i class="fa-solid fa-network-wired text-sm"></i>
+                        <span class="text-[9px] font-bold">المنصة الترحيبية</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Bottom System Status Pill -->
+            <div class="flex flex-col items-center gap-2">
+                <button type="button" onclick="navigateTo('login-view')" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition" title="تسجيل الدخول / تبديل المستخدم">
+                    <i class="fa-solid fa-user-lock text-xs"></i>
+                </button>
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-1.5 text-center w-full" title="نظام الدوام: 2 نظري + 3 عملي">
+                    <span class="text-[8px] font-black text-amber-800 block">دوام فني 2+3</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col min-w-0">
+
+            <!-- Mobile Quick Header -->
+            <header id="mobile-quick-nav" class="lg:hidden bg-white border-b border-slate-200 px-3 py-2 flex items-center justify-between sticky top-0 z-40 no-print">
+                <div class="flex items-center gap-2">
+                    <img src="assets/logo.jpg" alt="Logo" class="w-8 h-8 object-contain">
+                    <span class="text-xs font-black text-navy-900">مجمع الكمال للبترول</span>
+                </div>
+
+                <div class="flex items-center gap-1 overflow-x-auto py-1">
+                    <button type="button" onclick="navigateTo('admin-dashboard-view')" class="px-2 py-1 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-700 shrink-0">الإدارة</button>
+                    <button type="button" onclick="navigateTo('teacher-portal-view')" class="px-2 py-1 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-700 shrink-0">المدرب</button>
+                    <button type="button" onclick="navigateTo('student-portal-view')" class="px-2 py-1 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-700 shrink-0">الطالب</button>
+                    <button type="button" onclick="navigateTo('departments-view')" class="px-2 py-1 rounded-lg bg-slate-100 text-[10px] font-bold text-slate-700 shrink-0">الأقسام</button>
+                    <button type="button" onclick="navigateTo('parent-portal-view')" class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-[10px] font-bold shrink-0">ولي الأمر</button>
+                    <button type="button" onclick="navigateTo('login-view')" class="px-2 py-1 rounded-lg bg-navy-900 text-white text-[10px] font-bold shrink-0">دخول</button>
+                </div>
+            </header>
+
+            <main class="flex-1">
+
+                <!-- ============================================================== -->
+                <!-- GATE SCREEN: UNIFIED LOGIN PORTAL (التعرف التلقائي الذكي بالـ ID) -->
+                <!-- ============================================================== -->
+                <section id="login-view" class="view-panel min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-[#eaf2fd] via-[#f4f7fb] to-[#ffffff]">
+                    <div class="w-full max-w-5xl flex flex-col gap-5">
+                        
+                        <!-- Top Header -->
+                        <div class="flex items-center justify-between">
+                            <button type="button" onclick="navigateTo('portal-hub-view')" class="flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-blue-600 transition">
+                                <i class="fa-solid fa-arrow-right"></i>
+                                <span>معاينة المنصة الترحيبية</span>
+                            </button>
+                            <span class="text-xs font-semibold text-slate-400">بوابة الوصول الموحد الذكية • نظام الحضور والدرجات</span>
+                        </div>
+
+                        <!-- Brand Title Center -->
+                        <div class="text-center">
+                            <div class="inline-flex items-center gap-3.5 mb-1.5">
+                                <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 p-1.5 flex items-center justify-center shadow-md">
+                                    <img src="assets/logo.jpg" alt="شعار مجمع الكمال" class="w-full h-full object-contain">
+                                </div>
+                                <div class="text-right">
+                                    <h2 class="text-xl sm:text-2xl font-black text-navy-900 leading-tight">مجمع الكمال لتكنولوجيا العلوم والبترول</h2>
+                                    <p class="text-xs font-bold text-amber-600">مدارس الكمال ترند لينك الصناعية</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Split Card -->
+                        <div class="bg-white rounded-3xl border border-slate-200 card-shadow overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[520px]">
+                            
+                            <!-- Left Showcase Card (5 Cols) -->
+                            <div class="lg:col-span-5 bg-gradient-to-br from-navy-900 via-navy-800 to-blue-900 text-white p-7 flex flex-col justify-between relative overflow-hidden">
+                                <div class="relative z-10 flex items-center justify-between">
+                                    <span class="text-[11px] font-bold bg-white/10 px-3 py-1 rounded-full backdrop-blur-xs text-amber-300">
+                                        الفصل الدراسي الثاني • 2025/2026
+                                    </span>
+                                    <i class="fa-solid fa-oil-well text-amber-400 text-base"></i>
+                                </div>
+
+                                <div class="relative z-10 my-6 bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-xs">
+                                    <div class="w-full h-36 rounded-xl overflow-hidden mb-3.5 relative bg-slate-800">
+                                        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&h=300&fit=crop" alt="Industrial Technology" class="w-full h-full object-cover opacity-85">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-navy-950/90 to-transparent flex items-end p-3">
+                                            <p class="text-[11px] font-black leading-tight text-white">تأهيل كوادر فنية تكنولوجية في البترول والصناعات المتقدمة</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-[10px] text-amber-300 font-bold block mb-1">نظام الدوام المعتمد:</span>
+                                    <p class="text-xs text-slate-200 font-medium leading-relaxed">
+                                        <strong>يومان نظري:</strong> الأحد والإثنين (قاعات دراسية).<br>
+                                        <strong>ثلاثة أيام عملي:</strong> الثلاثاء والأربعاء والخميس (معامل وورش).<br>
+                                        <strong>عطلة نهاية الأسبوع:</strong> الجمعة والسبت إجازة رسمية.
+                                    </p>
+                                </div>
+
+                                <div class="relative z-10 space-y-3">
+                                    <div class="grid grid-cols-2 gap-2 text-center">
+                                        <div class="bg-white/10 rounded-xl p-2.5 backdrop-blur-xs border border-white/5">
+                                            <span class="text-lg font-black block text-amber-400">9 أقسام</span>
+                                            <span class="text-[10px] text-blue-200">بترول، تبريد، برمجة...</span>
+                                        </div>
+                                        <div class="bg-white/10 rounded-xl p-2.5 backdrop-blur-xs border border-white/5">
+                                            <span class="text-lg font-black block text-emerald-400">20 مدرباً</span>
+                                            <span class="text-[10px] text-blue-200">هيئة تدريبية متخصصة</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between text-[10px] text-blue-300 pt-2 border-t border-white/10">
+                                        <span>منظومة كمال لينك v5.0</span>
+                                        <span><i class="fa-solid fa-lock text-[9px]"></i> تسجيل دخول شخصي مشفر</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Login Form (7 Cols) - Unified Login with Smart Auto-Detection -->
+                            <div class="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between">
+                                <div>
+                                    <!-- Form Title & Smart Detection Indicator -->
+                                    <div class="mb-5">
+                                        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-800 text-[10px] font-bold px-3 py-1 rounded-full mb-2">
+                                            <i class="fa-solid fa-bolt-lightning text-amber-500"></i>
+                                            <span>التعرف التلقائي الذكي على الحساب بالـ ID</span>
+                                        </div>
+                                        <h3 class="text-xl font-black text-navy-900">تسجيل الدخول الموحد</h3>
+                                        <p class="text-xs text-slate-500 mt-1">
+                                            أدخل الرقم التعريفي (ID) وكلمة المرور، وسيقوم السيستم بالتعرف التلقائي على حسابك (طالب، معلم، إدارة، ولي أمر) وتحويلك فوراً للوحة الخاصة بك.
+                                        </p>
+                                    </div>
+
+                                    <!-- Actual Form: ID + Password -->
+                                    <form id="unified-smart-login-form" onsubmit="handleUnifiedLoginSubmit(event)" class="space-y-4">
+                                        
+                                        <!-- ID Field with Live Detection -->
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1.5">
+                                                <label class="text-xs font-bold text-slate-700">
+                                                    الرقم التعريفي (ID) <span class="text-rose-500">*</span>
+                                                </label>
+                                                <span class="text-[10px] text-slate-400 font-mono">طالب KML / مدرب TRN / إدارة ADM / ولي أمر</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="text" id="login-input-id" required value="KML-2024-101"
+                                                    oninput="handleIdInputChange(this.value)"
+                                                    placeholder="أدخل الـ ID الخاص بك (مثال: KML-2024-101)..."
+                                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-mono font-semibold focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition">
+                                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                                    <i class="fa-solid fa-id-badge text-base"></i>
+                                                </div>
+                                            </div>
+
+                                            <!-- Live Auto-Detection Pill -->
+                                            <div id="login-role-detection-pill" class="mt-2 flex items-center gap-2 p-2 rounded-xl text-xs font-bold bg-sky-50 text-sky-800 border border-sky-200 role-detected-anim">
+                                                <i class="fa-solid fa-circle-check text-sky-600"></i>
+                                                <span id="role-detect-text">تم التعرف على الكود: طالب فني (أحمد محمود الشريف)</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Password Field -->
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1.5">
+                                                <label class="text-xs font-bold text-slate-700">
+                                                    كلمة المرور (Password) <span class="text-rose-500">*</span>
+                                                </label>
+                                                <span class="text-[10px] text-slate-400">الافتراضية: 123456</span>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="password" id="login-input-password" required value="123456"
+                                                    placeholder="أدخل كلمة المرور..."
+                                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-semibold focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-600 transition">
+                                                <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 hover:text-slate-600">
+                                                    <i id="password-toggle-icon" class="fa-regular fa-eye text-sm"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
+                                            <label class="flex items-center gap-2 cursor-pointer font-medium">
+                                                <input type="checkbox" checked class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                                <span>حفظ بيانات تسجيل الدخول على هذا المتصفح</span>
+                                            </label>
+                                        </div>
+
+                                        <button type="submit" class="w-full py-3.5 px-4 bg-navy-900 hover:bg-navy-800 text-white rounded-xl text-xs sm:text-sm font-black shadow-md shadow-navy-900/15 transition flex items-center justify-center gap-2">
+                                            <span>تسجيل الدخول والتحويل التلقائي للوحة التحكم</span>
+                                            <i class="fa-solid fa-arrow-left"></i>
+                                        </button>
+                                    </form>
+
+                                    <!-- Quick 1-Click Fast Demo Roles for Al-Kamal -->
+                                    <div class="mt-5 pt-4 border-t border-slate-100">
+                                        <div class="flex items-center gap-1.5 mb-2.5">
+                                            <i class="fa-solid fa-wand-magic-sparkles text-amber-500 text-xs"></i>
+                                            <span class="text-[11px] font-black text-slate-700">أو اضغط للمعاينة السريعة بنقرة واحدة (1-Click Fast Login):</span>
+                                        </div>
+                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                            <!-- Demo Student -->
+                                            <button type="button" onclick="fillQuickCredentials('KML-2024-101')" class="p-2.5 text-right bg-sky-50/80 hover:bg-sky-100 border border-sky-200 rounded-xl transition group">
+                                                <div class="text-[11px] font-black text-navy-900 flex items-center justify-between">
+                                                    <span>طالب فني</span>
+                                                    <i class="fa-solid fa-graduation-cap text-sky-600 text-xs"></i>
+                                                </div>
+                                                <div class="text-[10px] text-slate-500 font-mono mt-0.5">KML-2024-101</div>
+                                            </button>
+
+                                            <!-- Demo Trainer -->
+                                            <button type="button" onclick="fillQuickCredentials('TRN-PETRO-05')" class="p-2.5 text-right bg-amber-50/80 hover:bg-amber-100 border border-amber-200 rounded-xl transition group">
+                                                <div class="text-[11px] font-black text-navy-900 flex items-center justify-between">
+                                                    <span>مدرب بترول</span>
+                                                    <i class="fa-solid fa-oil-well text-amber-600 text-xs"></i>
+                                                </div>
+                                                <div class="text-[10px] text-slate-500 font-mono mt-0.5">TRN-PETRO-05</div>
+                                            </button>
+
+                                            <!-- Demo Admin -->
+                                            <button type="button" onclick="fillQuickCredentials('ADM-1001')" class="p-2.5 text-right bg-blue-50/80 hover:bg-blue-100 border border-blue-200 rounded-xl transition group">
+                                                <div class="text-[11px] font-black text-navy-900 flex items-center justify-between">
+                                                    <span>الإدارة العامة</span>
+                                                    <i class="fa-solid fa-shield-halved text-blue-600 text-xs"></i>
+                                                </div>
+                                                <div class="text-[10px] text-slate-500 font-mono mt-0.5">ADM-1001</div>
+                                            </button>
+
+                                            <!-- Demo Parent -->
+                                            <button type="button" onclick="fillQuickCredentials('0501234567')" class="p-2.5 text-right bg-emerald-50/80 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition group">
+                                                <div class="text-[11px] font-black text-navy-900 flex items-center justify-between">
+                                                    <span>ولي أمر</span>
+                                                    <i class="fa-solid fa-house-user text-emerald-600 text-xs"></i>
+                                                </div>
+                                                <div class="text-[10px] text-slate-500 font-mono mt-0.5">0501234567</div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- SCREEN 1: PORTAL SELECTION HUB (المنصة الموحدة للتعلم الرقمي)  -->
+                <!-- ============================================================== -->
+                <section id="portal-hub-view" class="view-panel hidden min-h-screen flex flex-col justify-between p-4 sm:p-6 lg:p-10 bg-gradient-to-b from-[#f8faff] via-[#f2f6fc] to-[#eef4fb]">
+                    <div class="max-w-6xl w-full mx-auto flex items-center justify-between pb-6 border-b border-slate-200/60">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 p-1 flex items-center justify-center shadow-md">
+                                <img src="assets/logo.jpg" alt="Logo" class="w-full h-full object-contain">
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-black text-navy-900 tracking-tight">مجمع الكمال لتكنولوجيا العلوم والبترول</h2>
+                                <p class="text-xs text-amber-600 font-bold">مدارس الكمال ترند لينك الصناعية</p>
+                            </div>
+                        </div>
+
+                        <div class="hidden md:flex items-center gap-6 text-xs font-bold text-slate-600">
+                            <span class="text-blue-600 border-b-2 border-blue-600 pb-1 cursor-pointer" onclick="navigateTo('departments-view')">الأقسام والتخصصات الـ 9</span>
+                            <span class="hover:text-blue-600 cursor-pointer" onclick="navigateTo('student-portal-view')">لوحة الطالب والدرجات</span>
+                            <span class="hover:text-blue-600 cursor-pointer" onclick="navigateTo('teacher-portal-view')">بوابة المدرب ورصد الورش</span>
+                            <span class="hover:text-blue-600 cursor-pointer" onclick="navigateTo('parent-portal-view')">بوابة أولياء الأمور</span>
+                            <span class="hover:text-blue-600 cursor-pointer" onclick="navigateTo('admin-dashboard-view')">الإدارة المركزية</span>
+                        </div>
+
+                        <div class="flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-bold shadow-2xs">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>القبول والتسجيل متاح</span>
+                        </div>
+                    </div>
+
+                    <!-- Hub Hero -->
+                    <div class="max-w-4xl w-full mx-auto text-center my-8">
+                        <div class="inline-flex flex-wrap items-center justify-center gap-2 mb-4">
+                            <span class="bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs">
+                                <i class="fa-solid fa-oil-well text-amber-600"></i>
+                                <span>تخصصات بترول، تبريد، إلكترونيات، برمجة ولحام</span>
+                            </span>
+                            <span class="bg-blue-50 text-blue-800 border border-blue-200 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs">
+                                <i class="fa-solid fa-calendar-check text-blue-600"></i>
+                                <span>نظام: يومان نظري + 3 أيام عملي في الورش</span>
+                            </span>
+                        </div>
+
+                        <h1 class="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight">
+                            مرحباً بكم في مجمع الكمال لتكنولوجيا العلوم والبترول
+                        </h1>
+                        <p class="text-sm sm:text-base text-slate-600 mt-4 max-w-2xl mx-auto font-medium leading-relaxed">
+                            صرح تعليمي وتدريبي صناعي متكامل يجمع بين المحاضرات الأكاديمية النظرية والتدريب الميداني في أحدث المعامل وورش البترول والتكنولوجيا.
+                        </p>
+                    </div>
+
+                    <!-- 5 Major Cards -->
+                    <div class="max-w-6xl w-full mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 my-6">
+                        <div class="bg-white rounded-3xl p-6 border border-slate-200 card-shadow card-hover flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] font-bold bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full border border-blue-100">بوابة المتعلمين</span>
+                                <h3 class="text-lg font-black text-navy-900 mt-2 mb-1">لوحة تحكم الطالب</h3>
+                                <p class="text-xs text-slate-500 font-medium mb-4">كشف الدرجات الشامل بالمواد، مؤشر السلوك والشهادات، والتقويم ثلاثي الأبعاد.</p>
+                            </div>
+                            <button type="button" onclick="navigateTo('student-portal-view')" class="w-full py-2.5 px-3 bg-navy-900 hover:bg-navy-800 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                                <span>دخول الطالب</span>
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                        </div>
+
+                        <div class="bg-white rounded-3xl p-6 border border-amber-200/90 card-shadow card-hover flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] font-bold bg-amber-50 text-amber-700 px-2.5 py-0.5 rounded-full border border-amber-100">الكادر التدريبي</span>
+                                <h3 class="text-lg font-black text-navy-900 mt-2 mb-1">بوابة المدربين والورش</h3>
+                                <p class="text-xs text-slate-500 font-medium mb-4">رصد الحضور في الورش، رصد درجات العملي والنظري، وتدوين السلوك لولي الأمر.</p>
+                            </div>
+                            <button type="button" onclick="navigateTo('teacher-portal-view')" class="w-full py-2.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                                <span>دخول المدرب</span>
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                        </div>
+
+                        <div class="bg-white rounded-3xl p-6 border border-emerald-200/90 card-shadow card-hover flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] font-bold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-100">المتابعة الأسرية</span>
+                                <h3 class="text-lg font-black text-navy-900 mt-2 mb-1">بوابة ولي الأمر</h3>
+                                <p class="text-xs text-slate-500 font-medium mb-4">بحث فوري بالاسم أو ID، متابعة الحضور والغياب، السلوكيات، وتقديم الأعذار.</p>
+                            </div>
+                            <button type="button" onclick="navigateTo('parent-portal-view')" class="w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                                <span>دخول ولي الأمر</span>
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                        </div>
+
+                        <div class="bg-white rounded-3xl p-6 border border-slate-200 card-shadow card-hover flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full border border-slate-200">التخصصات المهنية</span>
+                                <h3 class="text-lg font-black text-navy-900 mt-2 mb-1">الأقسام والتخصصات</h3>
+                                <p class="text-xs text-slate-500 font-medium mb-4">استعراض الأقسام الصناعية الـ 9، المواد الدراسية، المعامل، والمشرفين.</p>
+                            </div>
+                            <button type="button" onclick="navigateTo('departments-view')" class="w-full py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                                <span>استعراض الأقسام</span>
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- SCREEN 2: ADMIN DASHBOARD (لوحة الإدارة المركزية والأقسام)      -->
+                <!-- ============================================================== -->
+                <section id="admin-dashboard-view" class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+                    
+                    <!-- Admin Header with Welcome and Approve Results Button -->
+                    <div class="bg-gradient-to-l from-navy-950 via-navy-900 to-blue-900 text-white p-6 sm:p-7 rounded-3xl card-shadow flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl bg-white p-1 border-2 border-blue-400 flex items-center justify-center shrink-0">
+                                <img src="assets/logo.jpg" alt="Logo" class="w-full h-full object-contain">
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-[10px] font-bold bg-blue-500/30 text-blue-200 border border-blue-400/30 px-2.5 py-0.5 rounded-md">ID: ADM-1001</span>
+                                    <span class="text-[10px] font-bold bg-emerald-500 text-white px-2 py-0.5 rounded-md">لوحة تحكم الإدارة العامة</span>
+                                </div>
+                                <h2 class="text-xl sm:text-2xl font-black">د. عبد الرحمن السعيد</h2>
+                                <p class="text-xs text-blue-200/90 font-medium mt-0.5">
+                                    مدير عام مجمع الكمال لتكنولوجيا العلوم والبترول • مدارس ترند لينك الصناعية
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <button type="button" onclick="approveAndPublishResults()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-xl text-xs transition flex items-center gap-2 shadow-md">
+                                <i class="fa-solid fa-stamp"></i>
+                                <span>اعتماد ونشر النتائج رسميّاً</span>
+                            </button>
+                            <button type="button" onclick="openAddStudentModal()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-xs transition flex items-center gap-2 shadow-md">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>تسجيل طالب جديد</span>
+                            </button>
+                            <button type="button" onclick="openAddDeptModal()" class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition border border-white/20 flex items-center gap-2">
+                                <i class="fa-solid fa-folder-plus"></i>
+                                <span>إضافة قسم جديد</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4 KPI Metrics -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 card-shadow flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400 block mb-1">إجمالي الطلاب المسجلين</span>
+                                <div id="kpi-total-students" class="text-2xl font-black text-navy-900 font-mono">180 طالباً</div>
+                                <span class="text-[10px] text-emerald-600 font-bold">بمعدل 30 طالباً لكل قسم</span>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg"><i class="fa-solid fa-user-graduate"></i></div>
+                        </div>
+
+                        <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 card-shadow flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400 block mb-1">الأقسام الصناعية</span>
+                                <div id="kpi-total-departments" class="text-2xl font-black text-navy-900 font-mono">9 أقسام</div>
+                                <span class="text-[10px] text-amber-600 font-bold">بترول، تبريد، لحام...</span>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg"><i class="fa-solid fa-boxes-stacked"></i></div>
+                        </div>
+
+                        <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 card-shadow flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400 block mb-1">الهيئة التدريبية</span>
+                                <div class="text-2xl font-black text-navy-900 font-mono">20 مدرباً</div>
+                                <span class="text-[10px] text-blue-600 font-bold">9 عملي ورش + 11 نظري</span>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        </div>
+
+                        <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 card-shadow flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-slate-400 block mb-1">نسبة الانضباط والحضور</span>
+                                <div class="text-2xl font-black text-emerald-600 font-mono">96.8%</div>
+                                <span class="text-[10px] text-emerald-700 font-bold">التزام ممتاز بالورش</span>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg"><i class="fa-solid fa-chart-line"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- 20 Trainers Directory Section -->
+                    <div class="bg-white rounded-3xl border border-slate-200 card-shadow p-6 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
+                            <div>
+                                <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-users-gear text-blue-600"></i>
+                                    <span>دليل الكادر التدريبي والتعليمي (20 مدرباً ومدرساً معتمداً)</span>
+                                </h3>
+                                <p class="text-xs text-slate-400">9 مدربين عملي للورش والمعامل + 11 مدرساً للمواد النظرية العامة، لكل منهم كود ID خاص.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1 rounded-xl">9 مدربي ورش عملي</span>
+                                <span class="text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200 px-3 py-1 rounded-xl">11 مدرسي مواد نظري</span>
+                            </div>
+                        </div>
+
+                        <div id="trainers-directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-[360px] overflow-y-auto pr-1"></div>
+                    </div>
+
+                    <!-- Students Database Table with Live Search and ID management -->
+                    <div class="bg-white rounded-3xl border border-slate-200 card-shadow p-6 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
+                            <div>
+                                <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-users text-blue-600"></i>
+                                    <span>قاعدة بيانات طلاب مجمع الكمال (لكل طالب ID ورقم هاتف خاص)</span>
+                                </h3>
+                                <p class="text-xs text-slate-400">إدارة حسابات الطلاب، استعراض كشوف الدرجات، وحالات الحضور اليومي بالمعامل.</p>
+                            </div>
+
+                            <!-- Search bar -->
+                            <div class="relative w-full sm:w-72">
+                                <input type="text" oninput="handleAdminSearch(this.value)" placeholder="بحث بالاسم، الـ ID، أو القسم..." class="w-full px-3.5 py-2 pr-9 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-blue-600">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></div>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                                        <th class="py-3 px-4">الطالب والـ ID</th>
+                                        <th class="py-3 px-4">القسم والتخصص</th>
+                                        <th class="py-3 px-4">أرقام التواصل</th>
+                                        <th class="py-3 px-4 text-center">المعدل العام (GPA)</th>
+                                        <th class="py-3 px-4 text-center">حضور اليوم بالورشة</th>
+                                        <th class="py-3 px-4 text-center">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-students-table-body" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- SCREEN 3: DEDICATED DEPARTMENTS & MAJORS (صفحة الأقسام والتخصصات) -->
+                <!-- ============================================================== -->
+                <section id="departments-view" class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+                    
+                    <!-- Departments Header -->
+                    <div class="bg-gradient-to-l from-navy-950 via-slate-900 to-amber-900 text-white p-6 sm:p-7 rounded-3xl card-shadow flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl bg-white p-1 border-2 border-amber-400 flex items-center justify-center shrink-0">
+                                <img src="assets/logo.jpg" alt="Logo" class="w-full h-full object-contain">
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold bg-amber-500/30 text-amber-200 border border-amber-400/30 px-2.5 py-0.5 rounded-md mb-1 inline-block">دليل التخصصات الصناعية والتكنولوجية</span>
+                                <h2 class="text-xl sm:text-2xl font-black">أقسام وتخصصات مجمع الكمال (9 أقسام معتمدة)</h2>
+                                <p class="text-xs text-amber-100/90 font-medium mt-0.5">
+                                    عرض كل أقسام المدرسة المهنية، المواد الخاصة بكل قسم (نظري + عملي)، والمشرفين عليها.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <span class="bg-white/10 border border-white/20 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-300">
+                                نظام الدوام: 2 نظري + 3 عملي
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-3xl border border-slate-200 card-shadow">
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            <button type="button" onclick="filterDepartments('all')" id="dept-filter-all" class="px-3 py-1.5 rounded-xl text-xs font-black bg-navy-900 text-white transition">جميع الأقسام (9)</button>
+                            <button type="button" onclick="filterDepartments('petro')" id="dept-filter-petro" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:text-navy-900 transition">بترول وتعدين</button>
+                            <button type="button" onclick="filterDepartments('tech')" id="dept-filter-tech" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:text-navy-900 transition">برمجة وإلكترونيات وشبكات</button>
+                            <button type="button" onclick="filterDepartments('industry')" id="dept-filter-industry" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-600 hover:text-navy-900 transition">ميكانيكا وتبريد ولحام</button>
+                        </div>
+                        <span class="text-xs text-slate-400 font-semibold">كل قسم يحتوي على 30 طالباً وهيئة تدريب متخصصة</span>
+                    </div>
+
+                    <!-- 9 Departments Grid -->
+                    <div id="full-departments-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- SCREEN 4: TEACHER / TRAINER PORTAL (بوابة المدرب ورصد الورش)   -->
+                <!-- ============================================================== -->
+                <section id="teacher-portal-view" class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+                    
+                    <!-- Teacher Banner -->
+                    <div class="bg-gradient-to-l from-navy-950 via-slate-900 to-amber-900 text-white p-6 sm:p-7 rounded-3xl card-shadow flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl bg-white border-2 border-amber-400 p-1 flex items-center justify-center shrink-0">
+                                <img src="assets/logo.jpg" alt="Logo" class="w-full h-full object-contain">
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span id="teacher-view-code" class="text-[10px] font-bold bg-amber-500/30 text-amber-200 border border-amber-400/30 px-2.5 py-0.5 rounded-md font-mono">ID: TRN-PETRO-05</span>
+                                    <span class="text-[10px] font-bold bg-emerald-500 text-white px-2 py-0.5 rounded-md">مدرب عملي معتمد</span>
+                                </div>
+                                <h2 id="teacher-view-name" class="text-xl sm:text-2xl font-black">م. خالد عبد الجليل الشمري</h2>
+                                <p class="text-xs text-amber-100/90 font-medium mt-0.5">
+                                    رئيس قسم تكنولوجيا البترول والتعدين • مجمع الكمال ترند لينك الصناعية
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <button type="button" onclick="openAddNoteModal('')" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-navy-950 font-black rounded-xl text-xs transition flex items-center gap-2 shadow-md">
+                                <i class="fa-regular fa-comment-dots"></i>
+                                <span>تدوين سلوك وتنبيه لولي الأمر</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dual Tools: Live Attendance (Left) + Grades Entry (Right) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        <!-- Tool 1: Live Workshop Attendance (5 Cols) -->
+                        <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 card-shadow p-5 flex flex-col justify-between">
+                            <div>
+                                <div class="pb-3 border-b border-slate-100">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-[11px] font-bold text-amber-600 flex items-center gap-1.5">
+                                            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                            <span>رصد الغياب والحضور في الورش والمعامل</span>
+                                        </span>
+                                        <span class="text-[11px] font-bold bg-slate-100 px-2 py-0.5 rounded-md text-slate-600">فصل 2/أ بترول</span>
+                                    </div>
+                                    <h4 class="text-base font-black text-navy-900">ورشة محاكاة ضغط الآبار وتكرير الخام</h4>
+                                    <p class="text-xs text-slate-400 mt-0.5">ثلاثة أيام عملي: الثلاثاء، الأربعاء، الخميس</p>
+                                </div>
+
+                                <div class="flex items-center justify-between text-xs font-bold text-slate-500 my-3">
+                                    <span>طلاب القسم (30 طالباً)</span>
+                                    <button type="button" onclick="setAllTeacherStudents('present')" class="text-blue-600 hover:underline text-[11px] flex items-center gap-1">
+                                        <i class="fa-solid fa-check-double"></i>
+                                        <span>الكل حاضر بالورشة</span>
+                                    </button>
+                                </div>
+
+                                <div id="teacher-live-students-list" class="space-y-2 max-h-[320px] overflow-y-auto pr-1"></div>
+                            </div>
+
+                            <button type="button" onclick="saveTeacherLiveAttendance()" class="w-full mt-4 py-3 px-4 bg-navy-900 hover:bg-navy-800 text-white rounded-xl text-xs font-black shadow-md transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>اعتماد وتوثيق حضور ورشة اليوم</span>
+                            </button>
+                        </div>
+
+                        <!-- Tool 2: Enter & Update Practical/Theory Grades (7 Cols) -->
+                        <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 card-shadow p-6 flex flex-col justify-between space-y-4">
+                            <div>
+                                <div class="pb-3 border-b border-slate-100 flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                            <i class="fa-solid fa-award text-amber-500"></i>
+                                            <span>رصد درجات العملي بالورش والنظري</span>
+                                        </h3>
+                                        <p class="text-xs text-slate-400 mt-0.5">إدخال وتقييم درجات الورش والتكليفات العملية لطلاب القسم</p>
+                                    </div>
+                                    <span class="text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-lg">رصد فوري</span>
+                                </div>
+
+                                <div class="overflow-x-auto my-3">
+                                    <table class="w-full text-right text-xs">
+                                        <thead>
+                                            <tr class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                                                <th class="py-2.5 px-3">الطالب</th>
+                                                <th class="py-2.5 px-3 text-center">درجة العملي بالورشة (100)</th>
+                                                <th class="py-2.5 px-3 text-center">درجة النظري (100)</th>
+                                                <th class="py-2.5 px-3 text-center">درجة السلوك (100)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="teacher-grades-input-tbody" class="divide-y divide-slate-100">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                                <span class="text-xs text-slate-400 font-medium">يتم تحديث كشف درجات الطالب تلقائياً فور الحفظ</span>
+                                <button type="button" onclick="saveTeacherGradesEntry()" class="py-2.5 px-5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow-md transition flex items-center gap-2">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    <span>حفظ واعتماد الدرجات</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- SCREEN 5: STUDENT DASHBOARD (لوحة تحكم الطالب والدرجات والسلوك) -->
+                <!-- ============================================================== -->
+                <section id="student-portal-view" class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+                    
+                    <!-- 1. بطاقة التعريف: الاسم، الصورة، الـ ID، القسم المهني، الفرقة الدراسية -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 card-shadow flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop&crop=faces" alt="Student" class="w-18 h-18 rounded-2xl object-cover border-2 border-slate-200 shadow-2xs">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                    <span class="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-md">
+                                        <i class="fa-solid fa-oil-well ml-1"></i> تكنولوجيا البترول والتعدين
+                                    </span>
+                                    <span class="text-xs text-blue-700 bg-blue-50 border border-blue-200 font-mono font-bold px-2.5 py-0.5 rounded-md">
+                                        كود الطالب (ID): KML-2024-101
+                                    </span>
+                                    <span class="text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md">
+                                        منتظم بالدوام 2+3
+                                    </span>
+                                </div>
+                                <h2 class="text-xl sm:text-2xl font-black text-navy-900">أحمد محمود الشريف</h2>
+                                <p class="text-xs text-slate-500 mt-0.5">
+                                    الصف الثاني الثانوي الفني • شعبة 2/أ بترول • هاتف الطالب: <span class="font-mono font-bold text-slate-700">0541112233</span> • هاتف ولي الأمر: <span class="font-mono font-bold text-slate-700">0501234567</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Print & Export PDF Button -->
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="exportStudentReportCard()" class="px-5 py-3 bg-navy-900 hover:bg-navy-800 text-white rounded-xl text-xs font-black flex items-center gap-2 shadow-md transition no-print">
+                                <i class="fa-solid fa-print"></i>
+                                <span>طباعة / تصدير كشف الدرجات (PDF)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. مؤشر السلوك والحضور: نسبة الحضور، نقاط السلوك (98/100)، وشهادات التقدير والإنذارات -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        
+                        <!-- Attendance & Behavior Score Indicator (5 Cols) -->
+                        <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 card-shadow p-6 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h3 class="text-sm font-black text-navy-900 flex items-center gap-2 mb-3">
+                                    <i class="fa-solid fa-chart-pie text-blue-600"></i>
+                                    <span>مؤشر السلوك والمواظبة والحضور</span>
+                                </h3>
+
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <div class="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-center">
+                                        <span class="text-[11px] font-bold text-emerald-800 block mb-1">نسبة الحضور التراكمية</span>
+                                        <div class="text-2xl font-black text-emerald-600 font-mono">96%</div>
+                                        <span class="text-[10px] text-emerald-700 font-bold">20 يوماً من أصل 20</span>
+                                    </div>
+                                    <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 text-center">
+                                        <span class="text-[11px] font-bold text-amber-800 block mb-1">نقاط السلوك والمواظبة</span>
+                                        <div class="text-2xl font-black text-amber-700 font-mono">98 <span class="text-xs text-slate-400">/ 100</span></div>
+                                        <span class="text-[10px] text-amber-800 font-bold">سلوك مثالي نموذجي</span>
+                                    </div>
+                                </div>
+
+                                <!-- Behavior Progress Bar -->
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center justify-between text-xs font-bold">
+                                        <span class="text-slate-600">مقياس التقييم السلوكي العام:</span>
+                                        <span class="text-emerald-700 font-black">98% (ممتاز مرتفع)</span>
+                                    </div>
+                                    <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                                        <div class="h-full bg-gradient-to-l from-emerald-500 to-teal-600 rounded-full" style="width: 98%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Warnings Status -->
+                            <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2.5 text-xs text-emerald-900 font-bold">
+                                <i class="fa-solid fa-shield-check text-emerald-600 text-base"></i>
+                                <span>سجل الانضباط نظيف تماماً: 0 إنذارات أو مخالفات مسجلة.</span>
+                            </div>
+                        </div>
+
+                        <!-- Certificates & Honors (7 Cols) -->
+                        <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 card-shadow p-6 space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                                <h3 class="text-sm font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-certificate text-amber-500"></i>
+                                    <span>شهادات التقدير والأوسمة المعتمدة</span>
+                                </h3>
+                                <span class="text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md">شهادات معتمدة</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="student-certificates-container">
+                                <!-- Certificate 1 -->
+                                <div class="certificate-badge-card p-4 rounded-2xl flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-[10px] font-black text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-md">فبراير 2026</span>
+                                            <i class="fa-solid fa-trophy text-amber-500 text-sm"></i>
+                                        </div>
+                                        <h4 class="text-xs font-black text-navy-900 mb-1">شهادة تفوق في محاكاة آبار وتكرير البترول</h4>
+                                        <p class="text-[11px] text-slate-600 leading-relaxed">حصل على الدرجة النهائية (100%) في محاكاة ضغط الآبار وضبط صمامات الإغلاق التلقائي.</p>
+                                    </div>
+                                    <div class="mt-2.5 pt-2 border-t border-amber-200/60 text-[10px] text-slate-500 font-semibold">
+                                        موقعة من: م. خالد الشمري - رئيس قسم البترول
+                                    </div>
+                                </div>
+
+                                <!-- Certificate 2 -->
+                                <div class="certificate-badge-card p-4 rounded-2xl flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-[10px] font-black text-blue-800 bg-blue-100/80 px-2 py-0.5 rounded-md">يناير 2026</span>
+                                            <i class="fa-solid fa-medal text-blue-600 text-sm"></i>
+                                        </div>
+                                        <h4 class="text-xs font-black text-navy-900 mb-1">وسام الانضباط والسلامة المهنية (HSE)</h4>
+                                        <p class="text-[11px] text-slate-600 leading-relaxed">تطبيق مثالي لاشتراطات الوقاية وارتداء أدوات الحماية الشخصية PPE داخل المعامل البترولية.</p>
+                                    </div>
+                                    <div class="mt-2.5 pt-2 border-t border-amber-200/60 text-[10px] text-slate-500 font-semibold">
+                                        موقعة من: م. رامي الرشيد - مشرف السلامة
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 3. كشف الدرجات (Grades Sheet): جدول بالمواد (نظري + عملي/ورشة)، الدرجة العظمى، درجة الطالب، والتقدير -->
+                    <div id="grades-sheet-section" class="bg-white rounded-3xl border border-slate-200 card-shadow p-6 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
+                            <div>
+                                <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-file-invoice text-blue-600"></i>
+                                    <span>كشف الدرجات الأكاديمي والتطبيقي المفصل (Grades Sheet)</span>
+                                </h3>
+                                <p class="text-xs text-slate-400 mt-0.5">جدول كامل بالمواد (نظري + عملي بالورش والمعامل)، الدرجة العظمى، درجة الطالب، والتقدير الأكاديمي.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-black px-3 py-1.5 rounded-xl">
+                                    المعدل التراكمي (GPA): 4.88 / 5.00 • ممتاز مرتفع
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Grades Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-600 font-black border-b border-slate-200">
+                                        <th class="py-3 px-4">اسم المادة / المقرر الدراسي</th>
+                                        <th class="py-3 px-4">نوع المادة</th>
+                                        <th class="py-3 px-4 text-center">الدرجة العظمى</th>
+                                        <th class="py-3 px-4 text-center">درجة الطالب</th>
+                                        <th class="py-3 px-4 text-center">التقدير</th>
+                                        <th class="py-3 px-4">المدرب / المدرس المسؤول</th>
+                                        <th class="py-3 px-4 text-center">حالة الاعتماد</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-grades-sheet-tbody" class="divide-y divide-slate-100 font-medium">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                                <tfoot>
+                                    <tr class="bg-slate-50/80 font-black text-navy-900 border-t-2 border-slate-200">
+                                        <td class="py-3 px-4" colspan="2">المجموع الكلي للمقررات (الفصل الدراسي الثاني):</td>
+                                        <td class="py-3 px-4 text-center font-mono">800</td>
+                                        <td class="py-3 px-4 text-center font-mono text-emerald-600 text-sm">758 / 800</td>
+                                        <td class="py-3 px-4 text-center text-emerald-700">94.75% (ممتاز مرتفع)</td>
+                                        <td class="py-3 px-4" colspan="2">معتمد رسمياً من كنترول مجمع الكمال</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 4. نظام الحضور والغياب (شهري • أسبوعي • يومي) -->
+                    <div class="bg-white rounded-3xl border border-slate-200 card-shadow p-6 space-y-5">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
+                            <div>
+                                <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-regular fa-calendar-days text-blue-600"></i>
+                                    <span>نظام متابعة الحضور والغياب (يومي • أسبوعي • شهري)</span>
+                                </h3>
+                                <p class="text-xs text-slate-400">استعرض سجل الحضور بدقة متناهية لأي يوم أو أسبوع أو شهر مع تفاصيل المحاضرات والورش.</p>
+                            </div>
+
+                            <!-- View Mode Tabs & Month Selector -->
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="calendar-month-select" onchange="changeCalendarMonth(this.value)" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 shadow-2xs">
+                                    <option value="2026-02">فبراير 2026 (الشهر الحالي)</option>
+                                    <option value="2026-01">يناير 2026 (الشهر السابق)</option>
+                                </select>
+
+                                <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+                                    <button type="button" id="tab-mode-month" onclick="setAttendanceViewMode('month')" class="px-2.5 py-1 rounded-lg bg-navy-900 text-white shadow-2xs">شهري</button>
+                                    <button type="button" id="tab-mode-week" onclick="setAttendanceViewMode('week')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-navy-900">أسبوعي</button>
+                                    <button type="button" id="tab-mode-day" onclick="setAttendanceViewMode('day')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-navy-900">يومي</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 1. MONTHLY VIEW (Properly aligned Sunday-Saturday) -->
+                        <div id="attendance-view-month" class="space-y-4">
+                            <!-- Legend -->
+                            <div class="flex flex-wrap items-center justify-between text-xs font-semibold text-slate-600 gap-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-md bg-emerald-500"></span><span>حاضر (نظري/عملي)</span></span>
+                                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-md bg-amber-500"></span><span>غياب بعذر معتمد</span></span>
+                                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-md bg-rose-500"></span><span>غياب بدون عذر</span></span>
+                                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-md bg-slate-200"></span><span>عطلة (جمعة/سبت)</span></span>
+                                </div>
+                                <span class="text-[11px] text-slate-400">اضغط على أي يوم لعرض تفاصيل الحصص المحضورة</span>
+                            </div>
+
+                            <!-- Weekday Headers -->
+                            <div class="grid grid-cols-7 gap-2 text-center text-xs font-black text-slate-500 pb-2 border-b border-slate-100">
+                                <div>الأحد (نظري)</div>
+                                <div>الإثنين (نظري)</div>
+                                <div>الثلاثاء (عملي)</div>
+                                <div>الأربعاء (عملي)</div>
+                                <div>الخميس (عملي)</div>
+                                <div class="text-rose-500">الجمعة (إجازة)</div>
+                                <div class="text-rose-500">السبت (إجازة)</div>
+                            </div>
+
+                            <!-- Month Calendar Cells Container -->
+                            <div id="month-calendar-cells-grid" class="grid grid-cols-7 gap-2 pt-1"></div>
+                        </div>
+
+                        <!-- 2. WEEKLY VIEW -->
+                        <div id="attendance-view-week" class="hidden space-y-3">
+                            <div class="p-3 bg-blue-50/60 rounded-2xl border border-blue-200 text-xs font-bold text-blue-900 flex items-center justify-between">
+                                <span>جدول الأسبوع الحالي: 5 أيام دراسية (2 نظري + 3 عملي) + عطلة الجمعة والسبت</span>
+                                <span class="text-[11px] text-blue-700">نسبة انضباط الأسبوع: 100%</span>
+                            </div>
+                            <div id="weekly-days-list" class="grid grid-cols-1 sm:grid-cols-5 gap-3"></div>
+                        </div>
+
+                        <!-- 3. DAILY VIEW -->
+                        <div id="attendance-view-day" class="hidden space-y-4">
+                            <div class="flex items-center gap-3">
+                                <label class="text-xs font-bold text-slate-600">اختر اليوم للاستعلام:</label>
+                                <input type="date" id="daily-inspector-date" value="2026-02-12" onchange="inspectSingleDay(this.value)" class="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold">
+                            </div>
+                            <div id="daily-inspection-result-box" class="p-5 bg-slate-50 rounded-2xl border border-slate-200"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================== -->
+                <!-- SCREEN 6: PARENT PORTAL (بوابة ولي الأمر والبحث والمتابعة)      -->
+                <!-- ============================================================== -->
+                <section id="parent-portal-view" class="view-panel hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+                    <div class="bg-gradient-to-l from-navy-950 via-navy-900 to-emerald-950 text-white p-6 sm:p-7 rounded-3xl card-shadow flex flex-col md:flex-row md:items-center justify-between gap-5">
+                        <div class="flex items-center gap-4">
+                            <img src="assets/logo.jpg" alt="Logo" class="w-14 h-14 object-contain bg-white rounded-2xl p-1 border-2 border-emerald-400 shrink-0">
+                            <div>
+                                <span class="inline-block text-[10px] font-bold bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 px-2.5 py-0.5 rounded-md mb-1">بوابة ولي الأمر المعتمدة</span>
+                                <h2 class="text-xl sm:text-2xl font-black">أهلاً بك يا أبا أحمد 👋</h2>
+                                <p class="text-xs text-emerald-100/90 font-medium">متابعة حضور ودرجات وسلوك أبنائك في مجمع الكمال لتكنولوجيا العلوم والبترول</p>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="openExcuseModal()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-black transition flex items-center gap-2 shadow-md">
+                            <i class="fa-solid fa-file-signature"></i>
+                            <span>تقديم عذر غياب جديد</span>
+                        </button>
+                    </div>
+
+                    <!-- Instant Student Search for Parent (البحث بالاسم أو بالـ ID) -->
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 card-shadow flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex-1 max-w-md">
+                            <label class="block text-xs font-bold text-slate-600 mb-1">
+                                <i class="fa-solid fa-magnifying-glass text-blue-600 ml-1"></i> استعلام مباشر عن الطالب بالاسم أو الـ ID:
+                            </label>
+                            <input type="text" id="parent-student-search-input" oninput="handleParentStudentSearch(this.value)" placeholder="أدخل اسم الطالب أو الـ ID مثل KML-2024-101..." class="w-full px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div class="text-xs text-slate-500 font-semibold">
+                            الطالب المحدد حالياً: <strong id="parent-active-student-badge" class="text-navy-900 font-bold bg-slate-100 px-2.5 py-1 rounded-lg">أحمد محمود الشريف (KML-2024-101)</strong>
+                        </div>
+                    </div>
+
+                    <!-- Selected Student Profile & Attendance Overview -->
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <div class="bg-white p-4 rounded-3xl border border-slate-200 card-shadow">
+                            <span class="text-xs font-bold text-slate-400">القسم والتخصص</span>
+                            <div class="text-base font-black text-navy-900 mt-1">تكنولوجيا البترول والتعدين</div>
+                            <span class="text-[10px] text-amber-600 font-bold">شعبة 2/أ بترول</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-3xl border border-emerald-200 card-shadow bg-emerald-50/20">
+                            <span class="text-xs font-bold text-emerald-800">حضور الشهر الحالي (فبراير)</span>
+                            <div class="text-2xl font-black text-emerald-600 mt-1">20 <span class="text-xs font-semibold">يوم</span></div>
+                            <span class="text-[10px] text-emerald-700">نسبة الانضباط: 96%</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-3xl border border-blue-200 card-shadow bg-blue-50/20">
+                            <span class="text-xs font-bold text-blue-800">حضور الشهر السابق (يناير)</span>
+                            <div class="text-2xl font-black text-blue-600 mt-1">22 <span class="text-xs font-semibold">يوم</span></div>
+                            <span class="text-[10px] text-blue-700">نسبة الانضباط: 97.5%</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-3xl border border-amber-200 card-shadow bg-amber-50/20">
+                            <span class="text-xs font-bold text-amber-800">المعدل التراكمي (GPA)</span>
+                            <div class="text-2xl font-black text-amber-700 mt-1">4.88 <span class="text-xs font-semibold">/ 5.00</span></div>
+                            <span class="text-[10px] text-amber-800 font-bold">تقدير: ممتاز مرتفع</span>
+                        </div>
+                    </div>
+
+                    <!-- Dual Section: Behavior Notes Feed (Right) + Excuses Tracker (Left) -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="lg:col-span-6 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-comments text-blue-600"></i>
+                                    <span>صندوق ملاحظات وسلوكيات المدربين والمدرسين</span>
+                                </h3>
+                            </div>
+                            <div id="parent-behavior-notes-list" class="space-y-3"></div>
+                        </div>
+
+                        <div class="lg:col-span-6 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-file-medical text-emerald-600"></i>
+                                    <span>أعذار الغياب المرفوعة للمدرسة</span>
+                                </h3>
+                                <button type="button" onclick="openExcuseModal()" class="text-xs font-bold text-emerald-600 hover:underline">
+                                    + تقديم عذر جديد
+                                </button>
+                            </div>
+                            <div id="parent-excuses-list" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- MODALS & PRINTABLE TRANSCRIPT TEMPLATE                         -->
+    <!-- ============================================================== -->
+    
+    <!-- Printable Official Student Report Card (Displayed during Print) -->
+    <div id="student-report-card-print-area" class="hidden print-only p-8 text-black bg-white">
+        <div class="border-b-2 border-black pb-4 mb-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <img src="assets/logo.jpg" alt="Logo" class="w-20 h-20 object-contain">
+                <div>
+                    <h2 class="text-xl font-bold">مجمع الكمال لتكنولوجيا العلوم والبترول</h2>
+                    <h3 class="text-sm font-semibold">مدارس الكمال ترند لينك الصناعية</h3>
+                    <p class="text-xs">المنظومة الرقمية الموحدة • كنترول شؤون الطلاب والامتحانات</p>
+                </div>
+            </div>
+            <div class="text-left text-xs space-y-1">
+                <div><strong>العام الدراسي:</strong> 2025/2026م</div>
+                <div><strong>الفصل الدراسي:</strong> الثاني</div>
+                <div><strong>تاريخ الطباعة:</strong> 21 فبراير 2026م</div>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 border border-gray-300 p-4 rounded-lg mb-6 grid grid-cols-2 gap-3 text-sm">
+            <div><strong>اسم الطالب:</strong> أحمد محمود الشريف</div>
+            <div><strong>كود الطالب (ID):</strong> KML-2024-101</div>
+            <div><strong>القسم المهني:</strong> تكنولوجيا البترول والتعدين</div>
+            <div><strong>الفرقة الدراسية:</strong> الصف الثاني الثانوي الفني (شعبة 2/أ)</div>
+            <div><strong>المعدل التراكمي (GPA):</strong> 4.88 / 5.00 (ممتاز مرتفع)</div>
+            <div><strong>نسبة الحضور:</strong> 96% (سلوك مثالي 98/100)</div>
+        </div>
+
+        <h4 class="font-bold text-base mb-2 border-b border-gray-300 pb-1">كشف درجات المواد والمقررات الدراسية (نظري + عملي):</h4>
+        <table class="w-full border-collapse border border-gray-400 text-xs mb-8">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border border-gray-400 p-2 text-right">المقرر الدراسي</th>
+                    <th class="border border-gray-400 p-2 text-center">نوع المقرر</th>
+                    <th class="border border-gray-400 p-2 text-center">الدرجة العظمى</th>
+                    <th class="border border-gray-400 p-2 text-center">درجة الطالب</th>
+                    <th class="border border-gray-400 p-2 text-center">التقدير</th>
+                    <th class="border border-gray-400 p-2 text-center">الحالة</th>
+                </tr>
+            </thead>
+            <tbody id="print-grades-tbody">
+                <!-- Filled dynamically or matches official transcript -->
+            </tbody>
+        </table>
+
+        <div class="grid grid-cols-3 gap-6 text-center text-xs pt-8 border-t border-gray-300">
+            <div>
+                <p class="font-bold mb-8">مسؤول الكنترول وشؤون الطلاب</p>
+                <p>م. فهد القحطاني</p>
+            </div>
+            <div>
+                <p class="font-bold mb-8">رئيس قسم تكنولوجيا البترول</p>
+                <p>م. خالد عبد الجليل الشمري</p>
+            </div>
+            <div>
+                <p class="font-bold mb-8">مدير عام مجمع الكمال الصناعي</p>
+                <p>د. عبد الرحمن السعيد</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Day Inspection Popup -->
+    <div id="modal-day-inspection" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                    <div id="day-inspect-icon" class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-black"><i class="fa-regular fa-calendar-check"></i></div>
+                    <div>
+                        <h4 id="day-inspect-title" class="font-bold text-navy-900 text-sm">تفاصيل اليوم</h4>
+                        <span id="day-inspect-date" class="text-[10px] text-slate-400 font-mono">---</span>
+                    </div>
+                </div>
+                <button type="button" onclick="closeDayInspectionModal()" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="day-inspect-body" class="space-y-3 pt-4 text-xs"></div>
+            <div class="pt-4 border-t border-slate-100 text-left">
+                <button type="button" onclick="closeDayInspectionModal()" class="px-4 py-2 bg-navy-900 text-white rounded-xl text-xs font-bold">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Student -->
+    <div id="modal-add-student" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="font-bold text-navy-900 text-base">تسجيل طالب جديد بكود ID خاص</h3>
+                <button type="button" onclick="closeAddStudentModal()" class="w-7 h-7 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-add-student" onsubmit="handleAddNewStudent(event)" class="space-y-3 pt-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اسم الطالب الرباعي *</label>
+                    <input type="text" id="new-name" required placeholder="مثال: زياد حسام الدين" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">القسم الفني *</label>
+                        <select id="new-department" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                            <option value="petro">تكنولوجيا البترول والتعدين</option>
+                            <option value="prog">البرمجة وتطوير البرمجيات</option>
+                            <option value="cooling">التبريد والتكييف الصناعي</option>
+                            <option value="welding">اللحام وتشكيل المعادن</option>
+                            <option value="electronics">الإلكترونيات والأنظمة الذكية</option>
+                            <option value="mechanics">الميكانيكا والصيانة الصناعية</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">كود الطالب التعريفي (ID)</label>
+                        <input type="text" id="new-id" placeholder="توليد تلقائي KML-2024-..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-semibold">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">هاتف الطالب</label>
+                        <input type="tel" id="new-student-phone" placeholder="05XXXXXXXX" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">هاتف ولي الأمر *</label>
+                        <input type="tel" id="new-parent-phone" required placeholder="05XXXXXXXX" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono">
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeAddStudentModal()" class="px-3 py-2 text-xs font-bold text-slate-600">إلغاء</button>
+                    <button type="submit" class="px-4 py-2 bg-navy-900 text-white text-xs font-bold rounded-xl">حفظ الطالب</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Department -->
+    <div id="modal-add-dept" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="font-bold text-navy-900 text-base">إضافة قسم صناعي جديد لمجمع الكمال</h3>
+                <button type="button" onclick="closeAddDeptModal()" class="w-7 h-7 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-add-dept" onsubmit="handleAddNewDepartment(event)" class="space-y-3 pt-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اسم القسم *</label>
+                    <input type="text" id="dept-name" required placeholder="مثال: قسم صيانة التوربينات البترولية" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">كود القسم *</label>
+                        <input type="text" id="dept-code" required placeholder="TURB-10" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">رئيس القسم والمدرب المسؤول</label>
+                        <input type="text" id="dept-head" placeholder="م. حسام العلي" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeAddDeptModal()" class="px-3 py-2 text-xs font-bold text-slate-600">إلغاء</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl">حفظ القسم</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Behavior Note -->
+    <div id="modal-add-note" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="font-bold text-navy-900 text-base">تدوين ملاحظة وسلوك طالب</h3>
+                <button type="button" onclick="closeAddNoteModal()" class="w-7 h-7 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-add-note" onsubmit="handleAddNewBehaviorNote(event)" class="space-y-3 pt-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اختر الطالب *</label>
+                    <select id="note-student-select" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">نوع الملاحظة *</label>
+                    <select id="note-type-select" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                        <option value="positive">🌟 تميز وتفوق عملي في الورشة</option>
+                        <option value="academic">📚 التزام بالسلامة المهنية (HSE)</option>
+                        <option value="warning">⚠️ تنبيه غياب وسلوك</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">عنوان الملاحظة *</label>
+                    <input type="text" id="note-title-input" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">التفاصيل والتوجيه *</label>
+                    <textarea id="note-content-input" rows="3" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"></textarea>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeAddNoteModal()" class="px-3 py-2 text-xs font-bold text-slate-600">إلغاء</button>
+                    <button type="submit" class="px-4 py-2 bg-navy-900 text-white text-xs font-bold rounded-xl">إرسال التقرير</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Submit Excuse -->
+    <div id="modal-submit-excuse" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 class="font-bold text-navy-900 text-base">تقديم عذر غياب لمدارس الكمال</h3>
+                <button type="button" onclick="closeExcuseModal()" class="w-7 h-7 text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-submit-excuse" onsubmit="handleParentSubmitExcuse(event)" class="space-y-3 pt-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">تاريخ الغياب *</label>
+                    <input type="date" id="excuse-date-input" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">نوع العذر *</label>
+                    <select id="excuse-type-select" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold">
+                        <option value="عذر مرضي ومراجعة مستشفى">عذر مرضي ومراجعة مستشفى أو عيادة</option>
+                        <option value="ظرف عائلي قاهر">ظرف عائلي قاهر</option>
+                        <option value="موعد رسمي / معاملة حكومية">موعد رسمي / معاملة حكومية</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">التفاصيل *</label>
+                    <textarea id="excuse-detail-input" rows="3" required placeholder="يرجى كتابة تفاصيل سبب الغياب..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"></textarea>
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="closeExcuseModal()" class="px-3 py-2 text-xs font-bold text-slate-600">إلغاء</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl">إرسال العذر</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="no-print"></div>
+
+    <!-- Application Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
